@@ -1,0 +1,77 @@
+User story for user login/logout
+
+As a user I want to be able to enter the system through my Google account, so that I am directed to the main page.
+
+Notes:
+GWT has a nice api for adding login/logout functionality, as seen in assignment 1.
+
+Definitions of done:
+	- A user who has an invalid Google account - response of the system should keep the user at the login page prompting the user to reattempt to log in.
+	- A user who has a valid Google account but invalid password - response of the system should keep the user at the login page prompting the user to reattempt to log in.
+	- A user who has a valid Google account and valid credentials - response of the system should be to bring the user to the main page.
+
+Tasks:
+	- Add functionality to the system so that the site is only accessible after successful login.
+	- Add a button for the user to login.
+	- Add a button for the user to logout once accepted by the system.
+
+Effort Estimation:
+	6 hours 
+
+
+
+User story for user profile information and preferences
+
+As a developer I want users to fill out a form containing personal information and account preferences, so that I can have better knowledge of the user domain and the ability to notify the user as per their preference.
+
+Definitions of done:
+	- A user that logs into the system for the first time - response of the system should be to prompt the user with a form to create a profile in order to obtain the user's name, age, location, and email address, as well as a form for specifying the users notification preferences.
+	- A user that logs into the system after having created a profile - response of the system should be to bring the user to the main page.
+
+Tasks:
+	- Add functionality to the system so that the system prompts a new user with a form for creating a profile and specifying preferences.
+	- Add functionality to the system so that the system does not prompt a returning user with a form for creating a profile.
+	- Add functionality such that the user's profile data and preferences are saved to the database after first log in.
+
+Effort Estimation:
+12 hours
+
+
+
+User story for updating user profile
+
+As a user I want to be able to change my profile settings, so that I can update my information.
+
+Definitions of done:
+	- A user that changes a particular profile setting - response of the system should be to update the change in the database and on the UI.
+
+Tasks:
+	- Add a button for enabling the user to view and change their current profile.
+	- Add functionality to the system so that when a change is made to a user's profile, the database and UI are updated.
+
+Effort Estimation:
+1 Hour 
+
+
+User story for updating user preferences
+As a user I want to be able to change preferences, so that I can have my preferences to my current needs.
+
+Definitions of done:
+	- A user that changes a particular preference setting - response of the system should be to update the change in the database and on the UI.
+
+Tasks:
+	- Add a button for enabling the user to edit their current preferences.
+	- Add functionality to the system so that when a change is made to a user's preferences, the database and UI are updated.
+
+Effort Estimation:
+1 Hour 
+
+
+
+
+
+
+
+
+
+
