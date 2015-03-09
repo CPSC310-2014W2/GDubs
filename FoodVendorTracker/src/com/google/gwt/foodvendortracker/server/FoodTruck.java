@@ -12,19 +12,30 @@ public class FoodTruck {
 	
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+	private String id;
+	@Persistent
 	private String name;
 	@Persistent
-	private String description;
+	private String description;	
 	@Persistent
 	private Double latitude;
 	@Persistent
 	private Double longitude;
 	
-	public FoodTruck(String name, String description, Double latitude, Double longitude){
+	public FoodTruck(String id, String name, String description, Double latitude, Double longitude){
+		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.latitude = latitude;
 		this.longitude = longitude;
+	}
+	
+	public String getId(){
+		return id;
+	}
+	
+	public String setId(){
+		return id;
 	}
 	
 	public String getName() {
