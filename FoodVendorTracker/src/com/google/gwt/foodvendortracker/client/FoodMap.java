@@ -12,6 +12,7 @@ import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.RootPanel;
 
 
 public class FoodMap implements EntryPoint {
@@ -53,7 +54,8 @@ public class FoodMap implements EntryPoint {
 		dock.addNorth(map, 500);
 
 		// Add the map to the HTML host page
-		RootLayoutPanel.get().add(dock);
+		//RootLayoutPanel.get().add(dock);
+		RootPanel.get("mapContainer").add(dock); 
 	}
 
 }

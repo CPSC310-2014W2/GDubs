@@ -3,12 +3,45 @@
 
 /** Example rules used by the template application (remove for your app) */
 h1 {
-  font-size: 2em;
+  font-size: 3em;
   font-weight: bold;
-  color: #777777;
-  margin: 40px 0px 70px;
+  color: white;
   text-align: center;
 }
+
+img {
+	float: left; 
+}
+
+.top {
+	position: fixed; 
+	width: 100%; 
+	top : 0px; 
+	height: 100px; 
+	background-color: black; 
+	margin-left: -10px; 
+	margin-top: 0px;  
+}
+
+.navigation {
+	position: relative; 
+	width: 20%;
+	top: 100px;  
+}
+
+.content {
+	position: fixed;
+	width: 80%; 
+	top: 100px; 
+	left: 20%; 
+}
+
+td#mapContainer {
+	position: absolute;
+	width: 500px; 
+	height: 500px; 
+}
+
 
 .sendButton {
   display: block;
