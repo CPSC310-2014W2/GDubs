@@ -3,6 +3,7 @@ package com.google.gwt.foodvendortracker.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.foodvendortracker.server.FoodTruck;
 import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.Maps;
@@ -15,6 +16,7 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
 
 public class FoodMap implements EntryPoint {
 
+	private static final String API_KEY = "AIzaSyBDGcnhtpy_BVkfa82aOb_mSPZezrQRiWs"; 
 	// GWT module entry point method.
 	public void onModuleLoad() {
 		/*
@@ -24,7 +26,7 @@ public class FoodMap implements EntryPoint {
 		 * application on a public server, but a blank key will work for an
 		 * application served from localhost.
 		 */
-		Maps.loadMapsApi("AIzaSyBDGcnhtpy_BVkfa82aOb_mSPZezrQRiWs", "2", false, new Runnable() {
+		Maps.loadMapsApi(API_KEY, "2", false, new Runnable() {
 			public void run() {
 				buildUi();
 			}
