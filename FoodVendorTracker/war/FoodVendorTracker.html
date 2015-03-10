@@ -2,19 +2,34 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <link type="text/css" rel="stylesheet" href="FoodVendorTracker">
+    <link type="text/css" rel="stylesheet" href="FoodVendorTracker.css">
     <title>FoodVendorTracker</title>
     <script type="text/javascript" language="javascript" src="foodvendortracker/foodvendortracker.nocache.js"></script>
   </head>
   <body>
-    <h1>FoodVendorTracker</h1>
+    <div class ="top">
+			<img src ="http://www.eventlords.com/wp-content/uploads/2014/06/Restaurant-Blue-icon.png" height="100px" width="100px"> 		
+			<h1>Food Vendor Tracker</h1> 		
+	</div>
+	<div class = "navigation"> 
+		<h2>Sidebar Placeholder</h2> 
+	</div>
+    <div class = "content">
     <div id="foodvendortracker"></div>
-    <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
-    <noscript>
-      <div style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
-        Your web browser must have JavaScript enabled
-        in order for this application to display correctly.
-      </div>
-    </noscript>
+    
+    <div id = "mainContent"></div>
+    
+	    <table align="left">
+	      <tr>
+	        <td id="nameFieldContainer"></td>
+	        <td id="sendButtonContainer"></td>
+	       	<td id="mapContainer"></td>
+	        
+	      </tr>
+	      <tr>
+	        <td colspan="2" style="color:red;" id="errorLabelContainer"></td>
+	      </tr>
+	    </table>
+	</div>
   </body>
 </html>

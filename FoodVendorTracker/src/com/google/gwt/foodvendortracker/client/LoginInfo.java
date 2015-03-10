@@ -8,7 +8,7 @@ public class LoginInfo implements Serializable
   private boolean loggedIn = false	;
   private String loginUrl			;
   private String logoutUrl			;
-  private String emailAddress		;
+  public String emailAddress		;
   private String nickname			;
 
   public boolean isLoggedIn() 

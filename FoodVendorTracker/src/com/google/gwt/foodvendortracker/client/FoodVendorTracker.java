@@ -8,7 +8,9 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTML;
@@ -35,27 +37,116 @@ public class FoodVendorTracker implements EntryPoint {
 	private final GreetingServiceAsync greetingService = GWT
 			.create(GreetingService.class);
 
+
+	private VerticalPanel mainPanel = new VerticalPanel();  
+	private LoginInfo loginInfo = null;
+	private VerticalPanel loginPanel = new VerticalPanel();
+	private Label loginLabel = new Label("Please sign in to your Google Account.");
+	private Anchor signInLink = new Anchor("Sign In");
+	private Anchor signOutLink = new Anchor("Sign Out");
+	
+	private Button uploadButton = new Button("Upload");
+	private Button deleteButton = new Button("Delete");
+	
+	private Label adminLabel = new Label("This is the admin page");
+	private Label userLabel = new Label("This is the non-admin page");
+
+	final FoodMap foodMap = new FoodMap();
+
+
+	LoginInfo logInfo = new LoginInfo();
+	
+	private void handleError(Throwable error) {
+        Window.alert(error.getMessage());
+        if (error instanceof NotLoggedInException) {
+          Window.Location.replace(loginInfo.getLogoutUrl());
+        }
+      }	
+	
 	/**
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
-		final Button sendButton = new Button("Send");
-		final TextBox nameField = new TextBox();
+		// Check login status using login service.
+	    LoginServiceAsync loginService = GWT.create(LoginService.class);
+	    loginService.login(GWT.getHostPageBaseURL(), new AsyncCallback<LoginInfo>() {
+	      public void onFailure(Throwable error) {
+	    	  handleError(error); 
+	      }
+
+	      public void onSuccess(LoginInfo result) {
+	    	  
+	        loginInfo = result;
+	        if(loginInfo.isLoggedIn()) {
+	        	if (loginInfo.emailAddress == "admin@example.com" || 
+	        			loginInfo.emailAddress == "admin1@example.com")
+	        		loadAdmin();
+	        	else {
+	        		loadMain(); 
+	        	}
+	        } else {
+	          loadLogin();
+	        }
+	      }
+	    });
+	}
+		
+	public void loadLogin() {
+		// Assemble login panel.
+		signInLink.setHref(loginInfo.getLoginUrl());
+		loginPanel.add(loginLabel);
+		loginPanel.add(signInLink);
+		RootPanel.get("mainContent").add(loginPanel);
+	}
+	
+	public void loadMain() {
+	    signOutLink.setHref(loginInfo.getLogoutUrl());
+	    
+		uploadButton.addStyleName("uploadButton");
+        RootPanel.get("sendButtonContainer").add(uploadButton);
+        mainPanel.add(signOutLink);
+        // TODO Associate the Main panel with the HTML host page. 
+		RootPanel.get("mainContent").add(mainPanel);
+		
+        foodMap.loadFoodTruck(); 
+
+	}
+		
+	public void loadAdmin() {	
+		// Set up sign out hyperlink.
+	    signOutLink.setHref(loginInfo.getLogoutUrl());
+		
+	    final TextBox nameField = new TextBox();
 		nameField.setText("GWT User");
 		final Label errorLabel = new Label();
 
 		// We can add style names to widgets
-		sendButton.addStyleName("sendButton");
+		uploadButton.addStyleName("uploadButton");
+		deleteButton.addStyleName("deleteButton");
 
 		// Add the nameField and sendButton to the RootPanel
 		// Use RootPanel.get() to get the entire body element
+		RootPanel.get("nameFieldContainer").add(adminLabel);
 		RootPanel.get("nameFieldContainer").add(nameField);	
-		RootPanel.get("sendButtonContainer").add(sendButton);
+		RootPanel.get("sendButtonContainer").add(uploadButton);
+		RootPanel.get("sendButtonContainer").add(deleteButton);
 		RootPanel.get("errorLabelContainer").add(errorLabel);
+		
+		mainPanel.add(signOutLink);
+		
+		// TODO Associate the Main panel with the HTML host page. 
+		RootPanel.get("mainContent").add(mainPanel);
 
 		// Focus the cursor on the name field when the app loads
 		nameField.setFocus(true);
-		nameField.selectAll();
+		nameField.selectAll(); 
+		
+		// Listen for mouse events on the upload button.
+	    uploadButton.addClickHandler(new ClickHandler() {
+	      public void onClick(ClickEvent event) {
+	        foodMap.loadFoodTruck();
+	      }
+	    });
 
 		// Create the popup dialog box
 		final DialogBox dialogBox = new DialogBox();
@@ -80,8 +171,8 @@ public class FoodVendorTracker implements EntryPoint {
 		closeButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				dialogBox.hide();
-				sendButton.setEnabled(true);
-				sendButton.setFocus(true);
+				deleteButton.setEnabled(true);
+				deleteButton.setFocus(true);
 			}
 		});
 
@@ -116,7 +207,7 @@ public class FoodVendorTracker implements EntryPoint {
 				}
 
 				// Then, we send the input to the server.
-				sendButton.setEnabled(false);
+				deleteButton.setEnabled(false);
 				textToServerLabel.setText(textToServer);
 				serverResponseLabel.setText("");
 				greetingService.greetServer(textToServer,
@@ -146,7 +237,8 @@ public class FoodVendorTracker implements EntryPoint {
 
 		// Add a handler to send the name to the server
 		MyHandler handler = new MyHandler();
-		sendButton.addClickHandler(handler);
+	    deleteButton.addClickHandler(handler); 
 		nameField.addKeyUpHandler(handler);
+	
 	}
 }

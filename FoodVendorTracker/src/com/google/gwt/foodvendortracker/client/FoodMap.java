@@ -19,8 +19,10 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class FoodMap implements EntryPoint {
 
+	
 	private static final String API_KEY     = "AIzaSyBDGcnhtpy_BVkfa82aOb_mSPZezrQRiWs"			; 
-	 private LoginInfo loginInfo 			= 		null										;
+	
+	private LoginInfo loginInfo 			= 		null										;
 	  private VerticalPanel loginPanel 		= 		new VerticalPanel()							;
 	  private Anchor signInLink 			= 		new Anchor("Sign In")						;
 	  private Anchor signOutLink 			= 		new Anchor("Sign Out")						;
@@ -28,7 +30,7 @@ public class FoodMap implements EntryPoint {
 	      "Please sign in to your Google Account to access the StockWatcher application.")		;
 
 
-	  public void onModuleLoad()
+	 public void onModuleLoad()
 	  {
 	    LoginServiceAsync loginService = GWT.create(LoginService.class);
 	    
@@ -62,9 +64,8 @@ public class FoodMap implements EntryPoint {
 	    RootPanel.get("foodvendortracker").add(loginPanel)		;
 	  }
 
-	private void loadFoodTruck() 
+	public void loadFoodTruck() 
 	{
-		signOutLink.setHref(loginInfo.getLogoutUrl());
 		Maps.loadMapsApi(API_KEY, "2", false, new Runnable() 
 		{
 			public void run() 
@@ -95,9 +96,8 @@ public class FoodMap implements EntryPoint {
 		dock.addNorth(map, 500);
 
 		// Add the map to the HTML host page
-
-		RootLayoutPanel.get().add(dock)				;
-		RootLayoutPanel.get().add(signOutLink)		;	
+		RootPanel.get("mapContainer").add(dock); 
+		//RootLayoutPanel.get().add(signOutLink);	
 	}
 
 }

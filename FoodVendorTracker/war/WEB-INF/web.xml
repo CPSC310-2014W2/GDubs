@@ -5,11 +5,23 @@
          version="2.5"
          xmlns="http://java.sun.com/xml/ns/javaee">
          
+  <servlet>
+    <servlet-name>greetServlet</servlet-name>
+    <servlet-class>com.google.gwt.foodvendortracker.server.GreetingServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>greetServlet</servlet-name>
+    <url-pattern>/foodvendortracker/greet</url-pattern>
+  </servlet-mapping>       
+         
   <!-- Default page to serve -->
   <welcome-file-list>
     <welcome-file>FoodVendorTracker.html</welcome-file>
   </welcome-file-list>
+  
   <!-- Servlets -->
+  
   <servlet>
     <servlet-name>loginService</servlet-name>
     <servlet-class>com.google.gwt.foodvendortracker.server.LoginServiceImpl</servlet-class>
