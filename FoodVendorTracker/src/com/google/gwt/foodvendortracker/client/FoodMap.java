@@ -76,8 +76,8 @@ public class FoodMap implements EntryPoint {
 
 	private void buildUi() 
 	{
-		// Open a map centered on Cawker City, KS USA
-		LatLng cawkerCity = LatLng.newInstance(39.509, -98.434);
+		// Open a map centered on Pizza place 
+		LatLng cawkerCity = LatLng.newInstance(49.2869026428645, -123.117533501725);
 
 		final MapWidget map = new MapWidget(cawkerCity, 2);
 		map.setSize("500px", "500px");
@@ -89,7 +89,7 @@ public class FoodMap implements EntryPoint {
 
 		// Add an info window to highlight a point of interest
 		map.getInfoWindow().open(map.getCenter(),
-				new InfoWindowContent("World's Largest Ball of Sisal Twine"));
+				new InfoWindowContent("testInfoWindow"));
 
 		final DockLayoutPanel dock = new DockLayoutPanel(Unit.PX);
 		dock.addNorth(map, 500);
