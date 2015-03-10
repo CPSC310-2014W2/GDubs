@@ -26,7 +26,7 @@ FoodTruckService {
 		try {
 			pm.makePersistent(foodTruck);
 		} finally {
-			pm.close();	
+			pm.close();
 		}
 	}
 
@@ -42,7 +42,6 @@ FoodTruckService {
 			System.out.println(list.toString());
 			foodTrucks = list.get(0);
 			returnString = foodTrucks.getId();
-			
 		} finally {
 			pm.close();
 		}
