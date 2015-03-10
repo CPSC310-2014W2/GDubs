@@ -6,5 +6,5 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("FoodTruck")
 public interface FoodTruckService extends RemoteService {
 	public void addFoodTruck(String id);
-	public String[] getFoodTrucks();
+	public String getFoodTrucks();
 }

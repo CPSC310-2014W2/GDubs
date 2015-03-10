@@ -16,6 +16,15 @@
     <url-pattern>/foodvendortracker/greet</url-pattern>
   </servlet-mapping>
   
+  <servlet>
+    <servlet-name>foodTruckService</servlet-name>
+    <servlet-class>com.google.gwt.foodvendortracker.server.FoodTruckServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>foodTruckService</servlet-name>
+    <url-pattern>/foodvendortracker/FoodTruck</url-pattern>
+  </servlet-mapping>
   <!-- Default page to serve -->
   <welcome-file-list>
     <welcome-file>FoodVendorTracker.html</welcome-file>
