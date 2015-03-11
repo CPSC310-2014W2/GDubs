@@ -1,11 +1,14 @@
 package com.google.gwt.foodvendortracker.client;
 
 
+import java.util.List;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.foodvendortracker.shared.FoodTruck;
 import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.Maps;
@@ -85,7 +88,7 @@ public class FoodMap implements EntryPoint {
 	}
 	
 	private void addTruck(){
-		foodTruckService.addFoodTruck("C1", new AsyncCallback<Void>(){
+		foodTruckService.parseFoodTruckData(new AsyncCallback<Void>(){
 			public void onFailure(Throwable error){
 				displayLabel.setText("Failure to add food truck: " + error.toString());
 			}
@@ -96,13 +99,15 @@ public class FoodMap implements EntryPoint {
 	}
 	
 	private void showDisplay() {
-		foodTruckService.getFoodTrucks(new AsyncCallback<String>(){
+		foodTruckService.getFoodTrucks(new AsyncCallback<List<FoodTruck>>(){
 		      public void onFailure(Throwable error) {
 		    	  displayLabel.setText("Failure to display food truck: " + error.toString());
 		      }
-		      public void onSuccess(String point) {
-		        displayLabel.setText(point);
-		      }
+			public void onSuccess(List<FoodTruck> result) {
+				for (FoodTruck ft : result){
+					System.out.println(ft.getId());
+				}
+			}
 		});
 	}
 }

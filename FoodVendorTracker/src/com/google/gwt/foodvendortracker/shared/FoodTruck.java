@@ -1,4 +1,4 @@
-package com.google.gwt.foodvendortracker.server;
+package com.google.gwt.foodvendortracker.shared;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
@@ -22,7 +22,12 @@ public class FoodTruck {
 	@Persistent
 	private Double longitude;
 	
+	public FoodTruck(){
+		
+	}
+	
 	public FoodTruck(String id, String name, String description, Double latitude, Double longitude){
+
 		this.id = id;
 		this.name = name;
 		this.description = description;
@@ -34,8 +39,8 @@ public class FoodTruck {
 		return id;
 	}
 	
-	public String setId(){
-		return id;
+	public void setId(String id){
+		this.id = id;
 	}
 	
 	public String getName() {
