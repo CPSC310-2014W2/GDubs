@@ -1,9 +1,12 @@
 package com.google.gwt.foodvendortracker.client;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.foodvendortracker.shared.FoodTruck;
 import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.Maps;
@@ -11,6 +14,7 @@ import com.google.gwt.maps.client.control.LargeMapControl;
 import com.google.gwt.maps.client.event.MapClickHandler;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.overlay.Marker;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -20,6 +24,10 @@ public class FoodMap implements EntryPoint {
 	
 	private static final String API_KEY     = "AIzaSyBDGcnhtpy_BVkfa82aOb_mSPZezrQRiWs"			; 
 	private ArrayList<LatLng> coordinates = 		new ArrayList<LatLng>()						;
+	private final FoodTruckServiceAsync foodTruckService = GWT.create(FoodTruckService.class)	;
+	private List<FoodTruck> foodtr;
+	String n  = "NO TRUCK";
+	
 	 public void onModuleLoad()
 	  {
 		 loadFoodTruck();
@@ -39,6 +47,7 @@ public class FoodMap implements EntryPoint {
 	}
 	private void buildUi() 
 	{
+		showDisplay();
 		addTestCoordinates();
 		LatLng Vancouver = LatLng.newInstance(49.2869026428645, -123.117533501725);
 
@@ -93,10 +102,22 @@ public class FoodMap implements EntryPoint {
 					}
 					
 				}
+				
+//				int size = -9;
+//				if(foodtr.size() >= 0)
+//				{
+//					size =foodtr.size();
+//				}
+				
 				if(success == true)
 				{
 					map.getInfoWindow().open(mark_coords,
-						new InfoWindowContent("MARKER INFO...TODO"));			
+						new InfoWindowContent("MARKER INFO...TODO"+ n ));			
+				}
+				else
+				{
+					map.getInfoWindow().open(mark_coords,
+							new InfoWindowContent("NO MArk...TODO"+ n));	
 				}
 					
 			}
@@ -105,6 +126,8 @@ public class FoodMap implements EntryPoint {
 	
 	private void addTestCoordinates()
 	{
+		
+		
 		LatLng t1 = LatLng.newInstance(49.2867, -123.117533501725);
 		coordinates.add(t1);
 		LatLng t2 = LatLng.newInstance(49.2862, -123.117533501725);
@@ -118,6 +141,28 @@ public class FoodMap implements EntryPoint {
 		LatLng t6 = LatLng.newInstance(49.2835, -123.117533501725);
 		coordinates.add(t6);
 	
+	}
+	private void showDisplay() 
+	{
+		foodTruckService.getFoodTrucks(new AsyncCallback<List<FoodTruck>>()
+		{
+
+			@Override
+			public void onFailure(Throwable caught) 
+			{
+				n = "ERRR";
+				return;
+				
+			}
+
+			@Override
+			public void onSuccess(List<FoodTruck> result) 
+			{
+
+				n = "succ";
+			}
+
+		});
 	}
 
 

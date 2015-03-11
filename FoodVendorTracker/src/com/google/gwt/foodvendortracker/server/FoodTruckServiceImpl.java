@@ -58,11 +58,14 @@ FoodTruckService {
 	
 
 	@Override
-	public List<FoodTruck> getFoodTrucks() {
+	public List<FoodTruck> getFoodTrucks() 
+	{
+		System.out.println("ENTER");
 		List<FoodTruck> list = null;
 		PersistenceManager pm = getPersistenceManager();
 		Query query = pm.newQuery(FoodTruck.class);
 		list = (List<FoodTruck>) query.execute();
+		System.out.println(list.size());
 		return list;
 	}
 	
