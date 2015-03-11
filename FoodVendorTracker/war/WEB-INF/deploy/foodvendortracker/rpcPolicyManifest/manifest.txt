@@ -1,0 +1,4 @@
+# Module foodvendortracker
+# RPC service class, partial path of RPC policy file
+com.google.gwt.foodvendortracker.client.LoginService, D20CB09E36166207E27C43F160497FF2.gwt.rpc
+com.google.gwt.foodvendortracker.client.FoodTruckService, 6B61D6F02A345849BED15769DADC3253.gwt.rpc

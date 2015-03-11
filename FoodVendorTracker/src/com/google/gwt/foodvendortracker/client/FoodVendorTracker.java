@@ -160,9 +160,17 @@ public class FoodVendorTracker implements EntryPoint {
 	  				displayLabel.setText("Failure to add food truck: " + error.toString());
 	  			}
 	  			public void onSuccess(Void ignore){
-	  				displayLabel.setText("SUCCESS!");
+	  	    	  foodTruckService.persistFoodTruckData(new AsyncCallback<Void>(){
+		    		  public void onFailure(Throwable error){
+		    			  displayLabel.setText("Fail");
+		    		  }
+		    		  public void onSuccess(Void ignore){
+		    			  displayLabel.setText("SUCCESS!");
+		    		  }
+		    	  });
 	  			}
 	  		}); 
+
 	      }
 	    });
 	}

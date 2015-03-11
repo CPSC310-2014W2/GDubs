@@ -32,7 +32,7 @@ FoodTruckService {
 	public void persistFoodTruckData() {
 		PersistenceManager pm = getPersistenceManager();
 		try {
-			pm.makePersistent(foodTrucks);
+			pm.makePersistentAll(foodTrucks);
 		} finally {
 			pm.close();
 		}
@@ -60,8 +60,7 @@ FoodTruckService {
 	@Override
 	public List<FoodTruck> getFoodTrucks() 
 	{
-		System.out.println("ENTER");
-		List<FoodTruck> list = null;
+		List<FoodTruck> list;
 		PersistenceManager pm = getPersistenceManager();
 		Query query = pm.newQuery(FoodTruck.class);
 		list = (List<FoodTruck>) query.execute();
@@ -70,7 +69,8 @@ FoodTruckService {
 	}
 	
 	@Override
-	public void deleteFoodTruckData() {
+	public void deleteFoodTruckData() 
+	{
 		PersistenceManager pm = getPersistenceManager();
 		pm.deletePersistent(foodTrucks);
 	}

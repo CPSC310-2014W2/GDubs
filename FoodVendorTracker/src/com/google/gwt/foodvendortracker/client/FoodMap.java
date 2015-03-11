@@ -146,13 +146,11 @@ public class FoodMap implements EntryPoint {
 	{
 		foodTruckService.getFoodTrucks(new AsyncCallback<List<FoodTruck>>()
 		{
-
 			@Override
 			public void onFailure(Throwable caught) 
 			{
-				n = "ERRR";
-				return;
-				
+				n = caught.toString() ;
+				return;			
 			}
 
 			@Override

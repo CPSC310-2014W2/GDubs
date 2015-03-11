@@ -1,0 +1,2 @@
+serviceClass: com.google.gwt.foodvendortracker.client.LoginService
+path: D20CB09E36166207E27C43F160497FF2.gwt.rpc
