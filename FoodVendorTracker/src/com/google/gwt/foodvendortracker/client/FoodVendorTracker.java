@@ -1,5 +1,6 @@
 package com.google.gwt.foodvendortracker.client;
 
+import com.google.gwt.foodvendortracker.server.FoodTruckServiceImpl;
 import com.google.gwt.foodvendortracker.shared.FieldVerifier;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -44,17 +45,19 @@ public class FoodVendorTracker implements EntryPoint {
 	private Label loginLabel = new Label("Please sign in to your Google Account.");
 	private Anchor signInLink = new Anchor("Sign In");
 	private Anchor signOutLink = new Anchor("Sign Out");
+	private Label displayLabel = new Label("");
 	
 	private Button uploadButton = new Button("Upload");
-	private Button deleteButton = new Button("Delete");
+	private Button deleteButton = new Button("Nothing");
 	
 	private Label adminLabel = new Label("This is the admin page");
 	private Label userLabel = new Label("This is the non-admin page");
 
 	final FoodMap foodMap = new FoodMap();
 
-
 	LoginInfo logInfo = new LoginInfo();
+	
+	private final FoodTruckServiceAsync foodTruckService = GWT.create(FoodTruckService.class);
 	
 	private void handleError(Throwable error) {
         Window.alert(error.getMessage());
@@ -79,7 +82,7 @@ public class FoodVendorTracker implements EntryPoint {
 	        loginInfo = result;
 	        if(loginInfo.isLoggedIn()) {
 	        	if (loginInfo.emailAddress == "admin@example.com" || 
-	        			loginInfo.emailAddress == "admin1@example.com")
+	        			loginInfo.emailAddress == "cherry.teiwee@gmail.com")
 	        		loadAdmin();
 	        	else {
 	        		loadMain(); 
@@ -127,6 +130,7 @@ public class FoodVendorTracker implements EntryPoint {
 		// Add the nameField and sendButton to the RootPanel
 		// Use RootPanel.get() to get the entire body element
 		RootPanel.get("nameFieldContainer").add(adminLabel);
+		RootPanel.get("nameFieldContainer").add(displayLabel);
 		RootPanel.get("nameFieldContainer").add(nameField);	
 		RootPanel.get("sendButtonContainer").add(uploadButton);
 		RootPanel.get("sendButtonContainer").add(deleteButton);
@@ -139,19 +143,26 @@ public class FoodVendorTracker implements EntryPoint {
 
 		// Focus the cursor on the name field when the app loads
 		nameField.setFocus(true);
-		nameField.selectAll(); 
+		nameField.selectAll();
 		
 		// Listen for mouse events on the upload button.
-	    uploadButton.addClickHandler(new ClickHandler() {
+	    deleteButton.addClickHandler(new ClickHandler() {
 	      public void onClick(ClickEvent event) {
-	        foodMap.loadFoodTruck();
+	        //foodMap.loadFoodTruck();
 	      }
 	    });
 	    
-	    // Listen for mouse events on the upload button.
-	    deleteButton.addClickHandler(new ClickHandler() {
+	    // Listen for mouse events on the delete button.
+	    uploadButton.addClickHandler(new ClickHandler() {
 	      public void onClick(ClickEvent event) {
-	        return; 
+	    	  foodTruckService.parseFoodTruckData(new AsyncCallback<Void>(){
+	  			public void onFailure(Throwable error){
+	  				displayLabel.setText("Failure to add food truck: " + error.toString());
+	  			}
+	  			public void onSuccess(Void ignore){
+	  				displayLabel.setText("SUCCESS!");
+	  			}
+	  		}); 
 	      }
 	    });
 	}

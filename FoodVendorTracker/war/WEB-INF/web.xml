@@ -22,4 +22,14 @@
     <url-pattern>/foodvendortracker/login</url-pattern>
   </servlet-mapping>
   
+  <servlet>
+    <servlet-name>foodTruckService</servlet-name>
+    <servlet-class>com.google.gwt.foodvendortracker.server.FoodTruckServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>foodTruckService</servlet-name>
+    <url-pattern>/foodvendortracker/FoodTruck</url-pattern>
+  </servlet-mapping>
+  
 </web-app>
