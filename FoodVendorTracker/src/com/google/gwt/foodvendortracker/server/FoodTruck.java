@@ -22,6 +22,10 @@ public class FoodTruck {
 	@Persistent
 	private Double longitude;
 	
+	public FoodTruck(){
+		
+	}
+	
 	public FoodTruck(String id, String name, String description, Double latitude, Double longitude){
 
 		this.id = id;

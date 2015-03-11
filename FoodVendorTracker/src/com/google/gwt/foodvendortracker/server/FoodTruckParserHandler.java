@@ -11,19 +11,18 @@ public class FoodTruckParserHandler extends DefaultHandler {
 
 	//List to hold FoodTruck objects
 	StringBuffer accumulator;
-	private List<FoodTruck> foodtrList;
-	private FoodTruck foodtr;
+	private List<FoodTruck> foodtrList = new ArrayList<>();
 
-	//	//Getter method for employee list
-	//	public List<FoodTruck> getFoodTrList() {
-	//		return foodtrList;
-	//	}
 	String id;
 	String name;
 	String description;
 	Double latitude;
 	Double longitude;
-
+	
+	public List<FoodTruck> getFoodTruckList(){
+		return foodtrList;
+	}
+	
 	@Override 
 	public void startDocument() {
 		System.out.println("Start Document!");
@@ -33,61 +32,56 @@ public class FoodTruckParserHandler extends DefaultHandler {
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attributes)
 			throws SAXException {
-
-		if (qName.equalsIgnoreCase("Placemark")) {
-			// create new FoodTruck and put it in Map
-			String id = attributes.getValue("id");
-			//initialize Employee object and set id attribute
-			foodtr.setId(id); 
-			System.out.print("Id = " + attributes.getValue("id"));
-//			foodtr = new FoodTruck(attributes.getValue("Id"));
-			//intialize list
-			if (foodtrList == null) 
-				foodtrList = new ArrayList<>();
+		if (qName.equalsIgnoreCase("placemark")) {
+			id = attributes.getValue("id");
+		}
+		if (qName.equalsIgnoreCase("name")) {
+			name = null;
+		}
+		if (qName.equalsIgnoreCase("description")) {
+			description = null;
+		}
+		if (qName.equalsIgnoreCase("coordinates")) {
+			latitude = null;
+			longitude = null;
 		}
 		accumulator.setLength(0);
 	}
 
 	public void characters(char[] temp, int start, int length) {
-		// Remember the value parsed
 		accumulator.append(temp, start, length);
-		System.out.println("Value of accumulator: " + accumulator.toString());
 	}
 
 
 	public void endElement(String uri, String localName, String qName) {
-		// Print out that we have seen the end of an element
-		System.out.println("EndElement: " + qName + " value: " + accumulator.toString().trim());	
-
 		if (qName.equalsIgnoreCase("name")) {
-			//set boolean values for fields, will be used in setting
-			foodtr.setName(accumulator.toString());
+			name = accumulator.toString();
 		} 
 		if (qName.equalsIgnoreCase("description")) {
-			foodtr.setDescription(accumulator.toString());
+			String unformattedDescription = accumulator.toString();
+			String formattedDescription = unformattedDescription.replaceAll("<[^>]*>", "");
+			description = formattedDescription;
 		} 
-//		if (qName.equalsIgnoreCase("Point")) {
-//			String coord = attributes.getValue("coordinates");	
-//			String[] parts = coord.split(",");
-//			String part1 = parts[0];
-//			String part2 = parts[1];
-//			foodtr.setLongitude(Double.parseDouble(part1));
-//			foodtr.setLatitude(Double.parseDouble(part2));	
-//		}
+		if (qName.equalsIgnoreCase("coordinates")) {
+			String coord = accumulator.toString();
+			String[] parts = coord.split(",");
+			String part1 = parts[0];
+			String part2 = parts[1];
+			longitude = Double.parseDouble(part1);
+			latitude = Double.parseDouble(part2);
+		}
+		if (qName.equalsIgnoreCase("placemark")) {
+			FoodTruck ft = new FoodTruck(id, name, description, latitude, longitude);
+			foodtrList.add(ft);
+			System.out.println("id: " + ft.getId() + " name: " + ft.getName() + " description: " + ft.getDescription() + " Long: " + ft.getLongitude() + " Lat: " + ft.getLatitude());
+		}
 	}
 
-
-	//	@Override
-	//	public void endElement(String uri, String localName, String qName)
-	//			throws SAXException {
-	//		if (qName.equalsIgnoreCase("Placemark")) {
-	//			//add FoodTruck object to list
-	//			foodtrList.add(foodtr);
-	//		}
-	//	}
 	public void endDocument() {
 		// Just let the user know as something to do
 		System.out.println("End Document!");
+		//System.out.println(foodtrList.get(0).getId());
+		//System.out.println(foodtrList.get(1).getId());
 	}
 
 

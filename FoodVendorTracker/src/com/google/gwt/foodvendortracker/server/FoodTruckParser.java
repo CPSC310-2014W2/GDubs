@@ -8,27 +8,27 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
 
 public class FoodTruckParser {
 
+	private String urlString = "http://m.uploadedit.com/ba3a/1426033445441.txt";
 	public FoodTruckParser() {
 
 	}
 
 	public List<FoodTruck> parse(String url) {
-		List<FoodTruck> foodTrucks = new ArrayList<FoodTruck>();
-		SAXParserFactory spf = SAXParserFactory.newInstance();
+		List<FoodTruck> foodTruckList = new ArrayList<FoodTruck>();
+		SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
 		try{
-			SAXParser sp = spf.newSAXParser();
+			SAXParser saxParser = saxParserFactory.newSAXParser();
 			FoodTruckParserHandler handler = new FoodTruckParserHandler();
-			URL sourceURL = new URL(url);
-			sp.parse(new InputSource(sourceURL.openStream()), handler);
+			URL sourceURL = new URL(urlString);
+			saxParser.parse(new InputSource(sourceURL.openStream()), handler);
 		}
 		catch (Exception e){
 			e.printStackTrace();
 		}
-		return foodTrucks;
+		return foodTruckList;
 	}
 
 
