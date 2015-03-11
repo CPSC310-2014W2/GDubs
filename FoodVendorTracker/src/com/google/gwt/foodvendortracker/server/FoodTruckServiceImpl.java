@@ -65,7 +65,8 @@ FoodTruckService {
 		Query query = pm.newQuery(FoodTruck.class);
 		list = (List<FoodTruck>) query.execute();
 		System.out.println(list.size());
-		return list;
+		List<FoodTruck> temp = new ArrayList<FoodTruck>(list);
+		return temp;
 	}
 	
 	@Override

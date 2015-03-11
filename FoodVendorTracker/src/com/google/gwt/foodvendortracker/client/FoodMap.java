@@ -126,7 +126,7 @@ public class FoodMap implements EntryPoint {
 	
 	private void addTestCoordinates()
 	{
-		
+		for()
 		
 		LatLng t1 = LatLng.newInstance(49.2867, -123.117533501725);
 		coordinates.add(t1);
