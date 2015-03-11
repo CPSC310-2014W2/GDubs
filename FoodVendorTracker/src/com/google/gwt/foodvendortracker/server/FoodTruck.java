@@ -23,6 +23,7 @@ public class FoodTruck {
 	private Double longitude;
 	
 	public FoodTruck(String id, String name, String description, Double latitude, Double longitude){
+
 		this.id = id;
 		this.name = name;
 		this.description = description;
