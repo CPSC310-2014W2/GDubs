@@ -7,6 +7,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import com.google.gwt.foodvendortracker.shared.FoodTruck;
+
 public class FoodTruckParserHandler extends DefaultHandler {
 
 	//List to hold FoodTruck objects

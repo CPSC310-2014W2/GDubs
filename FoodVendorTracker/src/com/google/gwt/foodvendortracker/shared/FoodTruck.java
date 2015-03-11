@@ -1,4 +1,4 @@
-package com.google.gwt.foodvendortracker.server;
+package com.google.gwt.foodvendortracker.shared;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;

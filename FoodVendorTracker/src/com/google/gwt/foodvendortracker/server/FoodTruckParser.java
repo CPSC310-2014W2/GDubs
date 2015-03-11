@@ -9,6 +9,8 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.InputSource;
 
+import com.google.gwt.foodvendortracker.shared.FoodTruck;
+
 public class FoodTruckParser {
 
 	

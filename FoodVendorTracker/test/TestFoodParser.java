@@ -11,9 +11,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.InputSource;
 
-import com.google.gwt.foodvendortracker.server.FoodTruck;
 import com.google.gwt.foodvendortracker.server.FoodTruckParser;
 import com.google.gwt.foodvendortracker.server.FoodTruckParserHandler;
+import com.google.gwt.foodvendortracker.shared.FoodTruck;
 
 
 
