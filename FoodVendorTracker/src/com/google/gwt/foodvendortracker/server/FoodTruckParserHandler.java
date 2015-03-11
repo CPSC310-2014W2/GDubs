@@ -17,7 +17,7 @@ public class FoodTruckParserHandler extends DefaultHandler {
 //	public List<FoodTruck> getFoodTrList() {
 //		return foodtrList;
 //	}
-
+	String id;
 	String name;
 	String description;
 	Double latitude;
