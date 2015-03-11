@@ -9,60 +9,20 @@ import com.google.gwt.maps.client.control.LargeMapControl;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.RootLayoutPanel;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
+
 
 public class FoodMap implements EntryPoint {
 
 	
 	private static final String API_KEY     = "AIzaSyBDGcnhtpy_BVkfa82aOb_mSPZezrQRiWs"			; 
 	
-	private LoginInfo loginInfo 			= 		null										;
-	  private VerticalPanel loginPanel 		= 		new VerticalPanel()							;
-	  private Anchor signInLink 			= 		new Anchor("Sign In")						;
-	  private Anchor signOutLink 			= 		new Anchor("Sign Out")						;
-	  private Label loginLabel 				= 		new Label(
-	      "Please sign in to your Google Account to access the StockWatcher application.")		;
-
-
 	 public void onModuleLoad()
 	  {
-	    LoginServiceAsync loginService = GWT.create(LoginService.class);
-	    
-	    loginService.login(GWT.getHostPageBaseURL(), new AsyncCallback<LoginInfo>() 
-	    {
-	    	public void onFailure(Throwable error) 
-	    	{
-	      
-	    	}
-
-	    	public void onSuccess(LoginInfo result) 
-	    	{
-	    	  loginInfo = result;
-	    	  if(loginInfo.isLoggedIn()) 
-	    	  {
-	        	loadFoodTruck();
-	    	  } 
-	    	  else 
-	    	  {
-	    		  loadLogin();
-	    	  }
-	    	}
-	    });
+		 loadFoodTruck();
 	  }
 
-	  private void loadLogin() 
-	  {
-	    signInLink.setHref(loginInfo.getLoginUrl())				;
-	    loginPanel.add(loginLabel)								;
-	    loginPanel.add(signInLink)								;
-	    RootPanel.get("foodvendortracker").add(loginPanel)		;
-	  }
+
 
 	public void loadFoodTruck() 
 	{
@@ -81,7 +41,7 @@ public class FoodMap implements EntryPoint {
 		LatLng cawkerCity = LatLng.newInstance(49.2869026428645, -123.117533501725);
 
 		final MapWidget map = new MapWidget(cawkerCity, 2);
-		map.setSize("500px", "500px");
+		map.setSize("100%", "100%");
 		// Add some controls for the zoom level
 		map.addControl(new LargeMapControl());
 
@@ -97,7 +57,6 @@ public class FoodMap implements EntryPoint {
 
 		// Add the map to the HTML host page
 		RootPanel.get("mapContainer").add(dock); 
-		//RootLayoutPanel.get().add(signOutLink);	
 	}
 
 }
