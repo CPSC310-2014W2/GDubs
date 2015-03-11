@@ -34,8 +34,8 @@ public class FoodTruck {
 		return id;
 	}
 	
-	public String setId(){
-		return id;
+	public void setId(String id){
+		this.id = id;
 	}
 	
 	public String getName() {

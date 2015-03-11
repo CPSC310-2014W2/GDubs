@@ -21,6 +21,13 @@ FoodTruckService {
 	public FoodTruck foodTruck = new FoodTruck("C1", "test truck", "test description", 10.00, 11.00);
 	
 	@Override
+	public void loadFoodTrucks(String url) {
+		FoodTruckParser parser = new FoodTruckParser();
+		List<FoodTruck> foodTrucks = parser.parse(url);
+		// loop through the foodtrucks and store them
+	}
+	
+	@Override
 	public void addFoodTruck(String id) {
 		PersistenceManager pm = getPersistenceManager();
 		try {
