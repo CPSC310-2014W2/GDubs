@@ -11,24 +11,30 @@ import org.xml.sax.InputSource;
 
 public class FoodTruckParser {
 
-	private String urlString = "http://m.uploadedit.com/ba3a/1426033445441.txt";
+	
+	private static final String urlString = "http://m.uploadedit.com/ba3a/1426033445441.txt";
+	private List<FoodTruck> foodTruckList = new ArrayList<>();
+	
 	public FoodTruckParser() {
 
 	}
 
-	public List<FoodTruck> parse(String url) {
-		List<FoodTruck> foodTruckList = new ArrayList<FoodTruck>();
+	public List<FoodTruck> getFoodTruckList(){
+		return foodTruckList;
+	}
+	
+	public void parse() {
 		SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
 		try{
 			SAXParser saxParser = saxParserFactory.newSAXParser();
 			FoodTruckParserHandler handler = new FoodTruckParserHandler();
 			URL sourceURL = new URL(urlString);
 			saxParser.parse(new InputSource(sourceURL.openStream()), handler);
+			foodTruckList = handler.getFoodTruckList();
 		}
 		catch (Exception e){
 			e.printStackTrace();
 		}
-		return foodTruckList;
 	}
 
 
