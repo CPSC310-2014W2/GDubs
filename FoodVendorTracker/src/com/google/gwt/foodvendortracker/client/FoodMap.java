@@ -117,7 +117,7 @@ public class FoodMap implements EntryPoint {
 						if(success == true)
 						{		
 							map.getInfoWindow().open(mark_coords,
-									new InfoWindowContent("Name" + name +  "<br />" + "Description: " + description));
+									new InfoWindowContent(name +  "<br />" + description));
 						}						
 					}
 				});	
