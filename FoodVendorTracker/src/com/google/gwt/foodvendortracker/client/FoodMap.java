@@ -59,9 +59,11 @@ public class FoodMap implements EntryPoint {
 			@Override
 			public void onSuccess(final List<FoodTruck> result) 
 			{
-				LatLng Vancouver 		= 		LatLng.newInstance(49.2869026428645, -123.117533501725)		;
-				final MapWidget map 	= 		new MapWidget(Vancouver, 8)									;
-				map.setSize("500px", "500px")			;
+				double vanLat = 49.2859026428645;
+				double vanLng = -123.117533501725;
+				LatLng Vancouver 		= 		LatLng.newInstance(vanLat, vanLng)		;
+				final MapWidget map 	= 		new MapWidget(Vancouver, 17)			;
+				map.setSize("100%", "100%")			;
 				map.addControl(new LargeMapControl())	;
 
 				for(FoodTruck tr : result)
