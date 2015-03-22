@@ -70,7 +70,7 @@ public class FoodMap implements EntryPoint {
 	    foodTruckPanel.add(addPanel)							;
 	    foodTruckPanel.add(foodTruckFlexTable)					;
 	    foodTruckPanel.add(lastUpdatedLabel)					;
-	    RootPanel.get("nameFieldContainer").add(foodTruckPanel)	;
+	    RootPanel.get("textFieldContainer").add(foodTruckPanel)	;
 	    searchedFoodTruck.setFocus(true)						;
 	    
 	    searchButton.addClickHandler(new ClickHandler() {

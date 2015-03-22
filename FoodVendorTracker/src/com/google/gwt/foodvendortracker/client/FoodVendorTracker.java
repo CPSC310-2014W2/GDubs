@@ -40,6 +40,9 @@ public class FoodVendorTracker implements EntryPoint {
 
 
 	private VerticalPanel mainPanel = new VerticalPanel();  
+	private VerticalPanel sidebarPanel = new VerticalPanel();  
+
+	
 	private LoginInfo loginInfo = null;
 	private VerticalPanel loginPanel = new VerticalPanel();
 	private Label loginLabel = new Label("Please sign in to your Google Account.");
@@ -48,7 +51,7 @@ public class FoodVendorTracker implements EntryPoint {
 	private Label displayLabel = new Label("");
 	
 	private Button uploadButton = new Button("Upload");
-	private Button deleteButton = new Button("Nothing");
+	private Button sampleButton = new Button("Nothing");
 	
 	private Label adminLabel = new Label("This is the admin page");
 	private Label userLabel = new Label("This is the non-admin page");
@@ -92,6 +95,14 @@ public class FoodVendorTracker implements EntryPoint {
 	        }
 	      }
 	    });
+	    
+	    sampleButton.addClickHandler(new ClickHandler() {
+		      public void onClick(ClickEvent event) {
+		        //test button
+		      }
+	    });
+		RootPanel.get("shareContainer").add(sampleButton);
+
 	}
 		
 	public void loadLogin() {
@@ -105,12 +116,12 @@ public class FoodVendorTracker implements EntryPoint {
 	public void loadMain() {
 	    signOutLink.setHref(loginInfo.getLogoutUrl());
 	    
-		uploadButton.addStyleName("uploadButton");
-        RootPanel.get("sendButtonContainer").add(uploadButton);
-        mainPanel.add(signOutLink);
+		RootPanel.get("textFieldContainer").add(userLabel);
+        sidebarPanel.add(signOutLink);
+        
         // TODO Associate the Main panel with the HTML host page. 
-		RootPanel.get("mainContent").add(mainPanel);
-		
+		RootPanel.get("navigation").add(sidebarPanel);
+        RootPanel.get("mapContainer").add(mainPanel);
         foodMap.onModuleLoad(); 
 
 	}
@@ -118,41 +129,20 @@ public class FoodVendorTracker implements EntryPoint {
 	public void loadAdmin() {	
 		// Set up sign out hyperlink.
 	    signOutLink.setHref(loginInfo.getLogoutUrl());
-		
-	    final TextBox nameField = new TextBox();
-		nameField.setText("GWT User");
-		final Label errorLabel = new Label();
-
+	    
 		// We can add style names to widgets
 		uploadButton.addStyleName("uploadButton");
-		deleteButton.addStyleName("deleteButton");
 
-		// Add the nameField and sendButton to the RootPanel
 		// Use RootPanel.get() to get the entire body element
-		RootPanel.get("nameFieldContainer").add(adminLabel);
-		RootPanel.get("nameFieldContainer").add(displayLabel);
-		RootPanel.get("nameFieldContainer").add(nameField);	
-		RootPanel.get("sendButtonContainer").add(uploadButton);
-		RootPanel.get("sendButtonContainer").add(deleteButton);
-		RootPanel.get("errorLabelContainer").add(errorLabel);
-		
-		mainPanel.add(signOutLink);
+		RootPanel.get("textFieldContainer").add(adminLabel);
+		RootPanel.get("textFieldContainer").add(displayLabel);
+		RootPanel.get("uploadButtonContainer").add(uploadButton);
+		sidebarPanel.add(signOutLink);
 		
 		// TODO Associate the Main panel with the HTML host page. 
-		RootPanel.get("mainContent").add(mainPanel);
-
-		// Focus the cursor on the name field when the app loads
-		nameField.setFocus(true);
-		nameField.selectAll();
-		
-		// Listen for mouse events on the upload button.
-	    deleteButton.addClickHandler(new ClickHandler() {
-	      public void onClick(ClickEvent event) {
-	        //foodMap.loadFoodTruck();
-	      }
-	    });
+		RootPanel.get("navigation").add(sidebarPanel);
 	    
-	    // Listen for mouse events on the delete button.
+	    // Listen for mouse events on the upload button.
 	    uploadButton.addClickHandler(new ClickHandler() {
 	      public void onClick(ClickEvent event) {
 	    	  foodTruckService.parseFoodTruckData(new AsyncCallback<Void>(){
