@@ -29,6 +29,25 @@ img {
 	background-color: #cccccc; 
 }
 
+.fb-root{
+	position: fixed; 
+	width:20%;
+	top:0px;
+	left: 80%;
+	height:100px;
+	float: left; 
+	background-color: #cccccc;
+}
+
+#fb-like {
+	position: fixed; 
+	width:20%;
+	top:0px;
+	left: 80%;
+	height:100px;
+	float: left; 
+	background-color: #cccccc;
+}
 #navigation {
 	position: fixed; 
 	width: 20%;
