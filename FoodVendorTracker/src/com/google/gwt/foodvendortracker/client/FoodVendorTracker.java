@@ -1,36 +1,21 @@
 package com.google.gwt.foodvendortracker.client;
 
-import com.google.gwt.foodvendortracker.server.FoodTruckServiceImpl;
-import com.google.gwt.foodvendortracker.shared.FieldVerifier;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class FoodVendorTracker implements EntryPoint {
-	/**
-	 * The message displayed to the user when the server cannot be reached or
-	 * returns an error.
-	 */
-	private static final String SERVER_ERROR = "An error occurred while "
-			+ "attempting to contact the server. Please check your network "
-			+ "connection and try again.";
 
 	/**
 	 * Create a remote service proxy to talk to the server-side Greeting service.
@@ -51,7 +36,6 @@ public class FoodVendorTracker implements EntryPoint {
 	private Label displayLabel = new Label("");
 	
 	private Button uploadButton = new Button("Upload");
-	private Button sampleButton = new Button("Nothing");
 	
 	private Label adminLabel = new Label("This is the admin page");
 	private Label userLabel = new Label("This is the non-admin page");
@@ -59,9 +43,13 @@ public class FoodVendorTracker implements EntryPoint {
 	final FoodMap foodMap = new FoodMap();
 
 	LoginInfo logInfo = new LoginInfo();
-	
+		
 	private final FoodTruckServiceAsync foodTruckService = GWT.create(FoodTruckService.class);
 	
+	// creating links on sidebar
+	private Anchor favLink = new Anchor("Favourite" + "\n\r" + "\u2665");// heart icon
+	private Anchor ratingLink = new Anchor("Rating" + "\n\r" + "\u2605"); // star icon
+
 	private void handleError(Throwable error) {
         Window.alert(error.getMessage());
         if (error instanceof NotLoggedInException) {
@@ -95,14 +83,6 @@ public class FoodVendorTracker implements EntryPoint {
 	        }
 	      }
 	    });
-	    
-	    sampleButton.addClickHandler(new ClickHandler() {
-		      public void onClick(ClickEvent event) {
-		        //test button
-		      }
-	    });
-		RootPanel.get("shareContainer").add(sampleButton);
-
 	}
 		
 	public void loadLogin() {
@@ -117,12 +97,20 @@ public class FoodVendorTracker implements EntryPoint {
 	    signOutLink.setHref(loginInfo.getLogoutUrl());
 	    
 		RootPanel.get("textFieldContainer").add(userLabel);
+		signOutLink.setStyleName("navLink");
+		favLink.setStyleName("navLink");
+		ratingLink.setStyleName("navLink");
+
+		
         sidebarPanel.add(signOutLink);
+        sidebarPanel.add(favLink);
+        sidebarPanel.add(ratingLink);
+
         
         // TODO Associate the Main panel with the HTML host page. 
 		RootPanel.get("navigation").add(sidebarPanel);
         RootPanel.get("mapContainer").add(mainPanel);
-        foodMap.onModuleLoad(); 
+        foodMap.loadFoodTruck(); 
 
 	}
 		
@@ -131,6 +119,7 @@ public class FoodVendorTracker implements EntryPoint {
 	    signOutLink.setHref(loginInfo.getLogoutUrl());
 	    
 		// We can add style names to widgets
+	    signOutLink.setStyleName("navLink");
 		uploadButton.addStyleName("uploadButton");
 
 		// Use RootPanel.get() to get the entire body element
