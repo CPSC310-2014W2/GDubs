@@ -45,7 +45,7 @@ public class FoodVendorTracker implements EntryPoint {
 	LoginInfo logInfo = new LoginInfo();
 		
 	private final FoodTruckServiceAsync foodTruckService = GWT.create(FoodTruckService.class);
-	
+	private final UserFavoriteServiceAsync userFavoriteService = GWT.create(UserFavoriteService.class);
 	// creating links on sidebar
 	private Anchor favLink = new Anchor("Favourite" + "\n\r" + "\u2665");// heart icon
 	private Anchor ratingLink = new Anchor("Rating" + "\n\r" + "\u2605"); // star icon

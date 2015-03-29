@@ -10,12 +10,16 @@ import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
 
+import com.google.appengine.api.users.User;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gwt.foodvendortracker.client.FoodTruckService;
+import com.google.gwt.foodvendortracker.client.NotLoggedInException;
+import com.google.gwt.foodvendortracker.client.UserFavoriteService;
 import com.google.gwt.foodvendortracker.shared.FoodTruck;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-public class FoodTruckServiceImpl extends RemoteServiceServlet implements 
-FoodTruckService {
+public class FoodTruckServiceImpl extends RemoteServiceServlet implements FoodTruckService, UserFavoriteService {
 	private static final PersistenceManagerFactory PMF = 
 			JDOHelper.getPersistenceManagerFactory("transactions-optional");
 	
@@ -55,8 +59,6 @@ FoodTruckService {
 		}
 		return returnString;
 	}
-	
-
 	@Override
 	public List<FoodTruck> getFoodTrucks() 
 	{
@@ -76,7 +78,88 @@ FoodTruckService {
 		pm.deletePersistent(foodTrucks);
 	}
 	
+	public void addFavorite(FoodTruck foodtruck) throws NotLoggedInException
+	{
+		checkLoggedIn();
+		PersistenceManager pm = getPersistenceManager();
+		try
+		{
+			Favorite favorite = new Favorite();
+			favorite.setFoodTruck(foodtruck);
+			favorite.setUser(getUser());
+			pm.makePersistent(favorite);
+		}
+		finally
+		{
+			pm.close();
+		}
+	}
+	
+	public void removeFavorite(FoodTruck foodtruck) throws NotLoggedInException
+	{
+		checkLoggedIn();
+		PersistenceManager pm = getPersistenceManager();
+		try
+		{
+			long deleteCount = 0;
+			Query q = pm.newQuery(Favorite.class, "user == u");
+			q.declareParameters("com.google.appengine.api.users.User u");
+			List<Favorite> favorites = (List<Favorite>) q.execute(getUser());
+			for(Favorite f : favorites)
+			{
+				if(f.getFoodTruck().getName().equals(foodtruck.getName()))
+				{
+					deleteCount ++;
+					pm.deletePersistent(f);
+				}
+			}
+		}
+		finally
+		{
+			pm.close();
+		}
+	}
+	
+	public ArrayList<FoodTruck> getFavoriteFoodTrucks() throws NotLoggedInException
+	{
+		checkLoggedIn();
+		PersistenceManager pm = getPersistenceManager();
+		ArrayList<FoodTruck> trucks = new ArrayList<FoodTruck>();
+		try
+		{
+			Query q = pm.newQuery(Favorite.class, "user == u");
+			q.declareParameters("com.google.appengine.api.users.User u");
+			q.setOrdering("createDate");
+			List<Favorite> favorites = (List<Favorite>) q.execute(getUser());
+			for(Favorite f : favorites)
+			{
+				trucks.add(f.getFoodTruck());
+			}
+		}
+		finally
+		{
+			pm.close();
+		}
+		return trucks;
+	}
+	
+	private void checkLoggedIn() throws NotLoggedInException 
+	  {
+		    if (getUser() == null) {
+		      throw new NotLoggedInException("Not logged in.");
+		    }
+		  }
+
+	private User getUser() 
+	{
+		UserService userService = UserServiceFactory.getUserService();
+		return userService.getCurrentUser();
+	}
+
+	
 	private PersistenceManager getPersistenceManager() {
 		return PMF.getPersistenceManager();
 	}
+	
+	
 }

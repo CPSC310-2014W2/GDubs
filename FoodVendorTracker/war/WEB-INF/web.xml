@@ -32,4 +32,16 @@
     <url-pattern>/foodvendortracker/FoodTruck</url-pattern>
   </servlet-mapping>
   
+   <servlet>
+    <servlet-name>UserFavoriteService</servlet-name>
+    <servlet-class>com.google.gwt.foodvendortracker.server.FoodTruckServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>UserFavoriteService</servlet-name>
+    <url-pattern>/foodvendortracker/Favorite</url-pattern>
+  </servlet-mapping>
+  
+  
+  
 </web-app>

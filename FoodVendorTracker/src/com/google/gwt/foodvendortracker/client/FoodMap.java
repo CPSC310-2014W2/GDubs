@@ -23,6 +23,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -37,7 +38,6 @@ public class FoodMap {
 	private final FoodTruckServiceAsync foodTruckService	 = 		GWT.create(FoodTruckService.class)			;
 	private VerticalPanel foodTruckPanel 					 = 		new VerticalPanel()							;
 	private VerticalPanel headerPanel 						 = 		new VerticalPanel()							;
-
 	private FlexTable foodTruckFlexTable 			  		 = 		new FlexTable()								;
 	private FlexTable headerFlexTable	 			  		 = 		new FlexTable()								;
 	private HorizontalPanel addPanel 				 		 = 		new HorizontalPanel()						;
@@ -97,7 +97,7 @@ public class FoodMap {
 	    scrollPanel = new ScrollPanel(foodTruckFlexTable);
 	    scrollPanel.setSize("100%", "450px");
 	    RootPanel.get("mainContent").add(scrollPanel);
-	    searchedFoodTruck.setFocus(true)						;
+	    searchedFoodTruck.setFocus(true)		;
 	    
 	    searchButton.addClickHandler(new ClickHandler() {
 	        public void onClick(ClickEvent event) {
@@ -194,10 +194,16 @@ public class FoodMap {
 		displayFoodTrucks(showTruck);
 	}
 	
-	private void displayFoodTruck(FoodTruck foodTruck) {
+	private void displayFoodTruck(FoodTruck foodTruck) 
+	{
 		int row = foodTruckFlexTable.getRowCount(); 
-		foodTruckFlexTable.setText(row, 0, foodTruck.getName());
-		foodTruckFlexTable.setText(row, 1, foodTruck.getDescription());		
+			HTML images = new HTML("<img src ='/images/Good.png'></img> "
+					+ "<img src ='/images/Okay.png'></img>"
+					+ "<img src ='/images/Meh.png'></img>"
+					+ "<img src ='/images/FML.png'></img>", true);
+			foodTruckFlexTable.setText(row, 0, foodTruck.getName());
+			foodTruckFlexTable.setText(row, 1, foodTruck.getDescription());	
+			foodTruckFlexTable.setWidget(row, 3, images);	
 	}
 	
 	private void displayFoodTrucks(List<FoodTruck> foodTruck) {
