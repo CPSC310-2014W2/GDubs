@@ -2,9 +2,8 @@ package com.google.gwt.foodvendortracker.client;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Arrays;
 import java.util.List;
-
+import java.util.logging.Logger;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -31,14 +30,12 @@ import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SuggestBox;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Label;
 
 public class FoodMap {
 
 	private static final String API_KEY                 	 = 		"AIzaSyBDGcnhtpy_BVkfa82aOb_mSPZezrQRiWs"	; 
-	private ArrayList<LatLng> coordinates					 = 		new ArrayList<LatLng>()						;
 	private final FoodTruckServiceAsync foodTruckService	 = 		GWT.create(FoodTruckService.class)			;
 	private VerticalPanel foodTruckPanel 					 = 		new VerticalPanel()							;
 	private VerticalPanel headerPanel 						 = 		new VerticalPanel()							;
@@ -59,7 +56,8 @@ public class FoodMap {
 	private ArrayList<FoodTruck> allTruck = new ArrayList<FoodTruck>();
 	private ArrayList<FoodTruck> filterTruck = new ArrayList<FoodTruck>();
 	private ArrayList<FoodTruck> showTruck = new ArrayList<FoodTruck>();
-
+	private static final Logger LOG = Logger.getLogger(FoodMap.class.getName());
+	
 	private String searchText ="";
 
 	public void loadFoodTruck() 
@@ -143,7 +141,8 @@ public class FoodMap {
 		});
 	}
 	
-	private void searchTruck() {
+	private void searchTruck() 
+	{
 		searchedFoodTruck.setFocus(true);
 		setSearch(searchedFoodTruck.getText().toLowerCase().trim());
 		filterTruck();
@@ -211,8 +210,22 @@ public class FoodMap {
 			Meh.setStyleName("Meh");
 			FML.setStyleName("FML");
 			
+			final HTML star = new HTML("<img src ='/images/star.png'>", true);
+			
+			
+			star.addClickHandler(new ClickHandler() 
+			{
+	            public void onClick(ClickEvent event) 
+	            {
+	            	star.setStyleName("navLink");
+	            }
+			
+	        });
+			
+			
 			foodTruckFlexTable.setText(row, 0, foodTruck.getName());
 			foodTruckFlexTable.setText(row, 1, foodTruck.getDescription());	
+			foodTruckFlexTable.setWidget(row, 2, star);	
 			foodTruckFlexTable.setWidget(row, 3, images);	
 	}
 	
@@ -225,7 +238,7 @@ public class FoodMap {
 		for (FoodTruck trucks: foodTruck)
 			displayFoodTruck(trucks); 
 		
-		loadQueryMarkers2(foodTruck);
+		loadQueryMarkers(foodTruck);
 		
 	}	
 	
@@ -262,75 +275,9 @@ public class FoodMap {
 		dock.addNorth(map, 500)											;				
 		RootPanel.get("mapContainer").add(dock)							;	 
 	}
-	
-	
-	public void loadQueryMarkers()
-	{
-	
-		foodTruckService.getFoodTrucks(new AsyncCallback<List<FoodTruck>>()
-				{
-					@Override
-					public void onFailure(Throwable caught) 
-					{
-						return;			
-					}
 
-					@Override
-					public void onSuccess(final List<FoodTruck> result) 
-					{
-						map.clearOverlays();
-						addCoords(result);
-						map.addMapClickHandler(new MapClickHandler()
-						{
-							public void onClick(MapClickEvent e) 
-							{
-								boolean success = false;
-								LatLng mark_coords = null;
-								int counter = 0;
-								for(LatLng coord : coordinates)
-								{
-									double LatEvent 	= 	e.getLatLng().getLatitude()		;
-									double LngEvent     =   e.getLatLng().getLongitude()	;
-									double LatMarker    =	coord.getLatitude()				;
-									double LngMarker    =   coord.getLongitude()			;
-									// result >0 LatEvent is > than LatMarker if < 0 it is less else is is equal
-									
-									//+0003, +- 00015
-									double LatMarker_larger 	 =	 LatMarker  +  0.0003   ;
-									double LatMarker_smaller	 =	 LatMarker  -  0.0003   ;  
-									double LngMarker_larger		 = 	 LngMarker  +  0.00008  ;
-									double LngMarker_smaller	 = 	 LngMarker  -  0.00008  ;
-									
-									int result1	 	= 	  Double.compare(LatEvent, LatMarker_larger)	;
-									int result2 	= 	  Double.compare(LatEvent, LatMarker_smaller)	;
-									int result3	 	= 	  Double.compare(LngEvent, LngMarker_larger)	;
-									int result4 	= 	  Double.compare(LngEvent, LngMarker_smaller)	;
-									
-									//1 1 -1 1
-									if((result1 <= 0 && result2 >= 0) && (result3 <= 0 && result4 >= 0))
-									{
-										success 		= 	true	;	
-										mark_coords 	= 	coord	;
-										break;
-									}
-									counter ++;
-								}
-								String description = result.get(counter).getDescription()	;
-								String name = result.get(counter).getName()					;
-								
-								if(success == true)
-								{		
-									map.getInfoWindow().open(mark_coords,
-											new InfoWindowContent(name +  "<br />" + description));
-									
-								}						
-							}
-						});	
-					}
-				});		
-	}
 	
-	public void loadQueryMarkers2(final List<FoodTruck> result)
+	public void loadQueryMarkers(final List<FoodTruck> result)
 	{
 		map.clearOverlays()			;
 		addCoords(result)			;
@@ -341,52 +288,54 @@ public class FoodMap {
 		LatLng center 		= 		LatLng.newInstance(Lat, Lng)		;
 		map.setCenter(center);
 		
-//		map.addMapClickHandler(new MapClickHandler()
-//		{
-//			public void onClick(MapClickEvent e) 
-//			{
-//				boolean success = false;
-//				LatLng mark_coords = null;
-//				int counter = 0;
-//				for(LatLng coord : coordinates)
-//				{
-//					double LatEvent 	= 	e.getLatLng().getLatitude()		;
-//					double LngEvent     =   e.getLatLng().getLongitude()	;
-//					double LatMarker    =	coord.getLatitude()				;
-//					double LngMarker    =   coord.getLongitude()			;
-//					// result >0 LatEvent is > than LatMarker if < 0 it is less else is is equal
-//					
-//					//+0003, +- 00015
-//					double LatMarker_larger 	 =	 LatMarker  +  0.0003   ;
-//					double LatMarker_smaller	 =	 LatMarker  -  0.0003   ;  
-//					double LngMarker_larger		 = 	 LngMarker  +  0.00008  ;
-//					double LngMarker_smaller	 = 	 LngMarker  -  0.00008  ;
-//					
-//					int result1	 	= 	  Double.compare(LatEvent, LatMarker_larger)	;
-//					int result2 	= 	  Double.compare(LatEvent, LatMarker_smaller)	;
-//					int result3	 	= 	  Double.compare(LngEvent, LngMarker_larger)	;
-//					int result4 	= 	  Double.compare(LngEvent, LngMarker_smaller)	;
-//					
-//			
-//					if((result1 <= 0 && result2 >= 0) && (result3 <= 0 && result4 >= 0))
-//					{
-//						success 		= 	true	;	
-//						mark_coords 	= 	coord	;
-//						break;
-//					}
-//					counter ++;
-//				}
-//				String description = result.get(counter).getDescription()	;
-//				String name = result.get(counter).getName()					;
-//				
-//				if(success == true)
-//				{		
-//					map.getInfoWindow().open(mark_coords,
-//							new InfoWindowContent(name +  "<br />" + description));
-//					
-//				}						
-//			}
-//		});	
+		map.addMapClickHandler(new MapClickHandler()
+		{
+			public void onClick(MapClickEvent e) 
+			{
+				boolean success = false;
+				LatLng mark_coords = null;
+				int counter = 0;
+				for(FoodTruck foodtruck : result)
+				{
+					
+					double LatEvent 	= 	e.getLatLng().getLatitude()		;
+					double LngEvent     =   e.getLatLng().getLongitude()	;
+					double LatMarker    =	foodtruck.getLatitude()				;
+					double LngMarker    =   foodtruck.getLongitude()			;
+					LatLng coord        =   LatLng.newInstance(LatMarker, LngMarker)		;
+					// result >0 LatEvent is > than LatMarker if < 0 it is less else is is equal
+					
+					//+0003, +- 00015
+					double LatMarker_larger 	 =	 LatMarker  +  0.0003   ;
+					double LatMarker_smaller	 =	 LatMarker  -  0.0003   ;  
+					double LngMarker_larger		 = 	 LngMarker  +  0.00008  ;
+					double LngMarker_smaller	 = 	 LngMarker  -  0.00008  ;
+					
+					int result1	 	= 	  Double.compare(LatEvent, LatMarker_larger)	;
+					int result2 	= 	  Double.compare(LatEvent, LatMarker_smaller)	;
+					int result3	 	= 	  Double.compare(LngEvent, LngMarker_larger)	;
+					int result4 	= 	  Double.compare(LngEvent, LngMarker_smaller)	;
+					
+			
+					if((result1 <= 0 && result2 >= 0) && (result3 <= 0 && result4 >= 0))
+					{
+						success 		= 	true	;	
+						mark_coords 	= 	coord	;
+						break;
+					}
+					counter ++;
+				}
+				String description = result.get(counter).getDescription()	;
+				String name = result.get(counter).getName()					;
+				
+				if(success == true)
+				{		
+					map.getInfoWindow().open(mark_coords,
+							new InfoWindowContent(name +  "<br />" + description));
+					
+				}						
+			}
+		});	
 	}
 	
 	public void addCoords(List<FoodTruck> result)
