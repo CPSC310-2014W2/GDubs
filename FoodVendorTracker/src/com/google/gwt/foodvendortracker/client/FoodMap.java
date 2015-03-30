@@ -346,7 +346,6 @@ public class FoodMap {
 			double longitude 	= 	tr.getLongitude()							;
 			LatLng cord 		= 	LatLng.newInstance(latitude, longitude)		;
 			map.addOverlay(new Marker(cord))	;
-			coordinates.add(cord)				;
 		}	
 	}
 }
