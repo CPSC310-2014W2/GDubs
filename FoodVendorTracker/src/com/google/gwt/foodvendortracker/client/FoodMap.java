@@ -25,8 +25,11 @@ import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -41,10 +44,15 @@ public class FoodMap {
 	private FlexTable foodTruckFlexTable 			  		 = 		new FlexTable()								;
 	private FlexTable headerFlexTable	 			  		 = 		new FlexTable()								;
 	private HorizontalPanel addPanel 				 		 = 		new HorizontalPanel()						;
-	private TextBox searchedFoodTruck 	 					 = 		new TextBox()								;
+	private SuggestBox searchedFoodTruck 	 				 = 		new SuggestBox(getVendorOracle())			;
 	private Button searchButton 							 = 		new Button("Search")						;
 	private Label lastUpdatedLabel 							 = 		new Label()									;
 	private ScrollPanel scrollPanel							 = 		new ScrollPanel()							;
+	
+	private Image Good = new Image("/images/Good.png"); 
+	private Image Okay = new Image("/images/Okay.png"); 
+	private Image Meh = new Image("/images/Meh.png"); 
+	private Image FML = new Image("/images/FML.png"); 
 	
 	private ArrayList<FoodTruck> allTruck = new ArrayList<FoodTruck>();
 	private ArrayList<FoodTruck> filterTruck = new ArrayList<FoodTruck>();
@@ -76,19 +84,19 @@ public class FoodMap {
 		headerFlexTable.setText(0, 3, "Rating")					;
 		headerFlexTable.getRowFormatter().addStyleName(0, "tableHeader");
 		headerFlexTable.getColumnFormatter().setWidth(0, "100px");
-		headerFlexTable.getColumnFormatter().setWidth(1, "300px");
-		headerFlexTable.getColumnFormatter().setWidth(2, "100px");
-		headerFlexTable.getColumnFormatter().setWidth(3, "100px");
+		headerFlexTable.getColumnFormatter().setWidth(1, "200px");
+		headerFlexTable.getColumnFormatter().setWidth(2, "50px");
+		headerFlexTable.getColumnFormatter().setWidth(3, "250px");
 
 		foodTruckFlexTable.getColumnFormatter().setWidth(0, "100px");
-		foodTruckFlexTable.getColumnFormatter().setWidth(1, "300px");
-		foodTruckFlexTable.getColumnFormatter().setWidth(2, "100px");
-		foodTruckFlexTable.getColumnFormatter().setWidth(3, "100px");
+		foodTruckFlexTable.getColumnFormatter().setWidth(1, "200px");
+		foodTruckFlexTable.getColumnFormatter().setWidth(2, "50px");
+		foodTruckFlexTable.getColumnFormatter().setWidth(3, "250px");
 		
 	    addPanel.add(searchedFoodTruck);
 	    addPanel.add(searchButton);
 	    headerPanel.add(headerFlexTable);
-	    RootPanel.get("textFieldContainer").add(addPanel);
+	    RootPanel.get("searchFieldContainer").add(addPanel);
 	    RootPanel.get("textFieldContainer").add(headerPanel);
 
 	    foodTruckPanel.add(foodTruckFlexTable)	;
@@ -97,7 +105,7 @@ public class FoodMap {
 	    scrollPanel = new ScrollPanel(foodTruckFlexTable);
 	    scrollPanel.setSize("100%", "450px");
 	    RootPanel.get("mainContent").add(scrollPanel);
-	    searchedFoodTruck.setFocus(true)		;
+	    searchedFoodTruck.setFocus(true);
 	    
 	    searchButton.addClickHandler(new ClickHandler() {
 	        public void onClick(ClickEvent event) {
@@ -116,19 +124,6 @@ public class FoodMap {
 	    });  
 	}
 	
-	private void addFoodTruck()
-	{
-		final String searchQuery = searchedFoodTruck.getText().toUpperCase().trim();
-
-		// TODO auto complete searchQuery??
-	    // TODO Add a button to favorite this foodtruck in the table.
-	    // TODO Get the food trucks name, description etc.
-		// TODO only plot valid food trucks on the map (call function to update map)
-		
-	    // TODO add valid food trucks for food item entered..?
-		//int row = foodTruckFlexTable.getRowCount()			;
-		searchedFoodTruck.setText("");
-	}
 	
 	private void fetchTruck(List<FoodTruck> foodTruck) {
 		foodTruckService.getFoodTrucks(new AsyncCallback<List<FoodTruck>>(){
@@ -156,7 +151,14 @@ public class FoodMap {
 	
 	private void setSearch(String searchText) {
 		this.searchText = searchText; 
-		searchedFoodTruck.setText(searchText); 
+		searchedFoodTruck.setText(searchText);
+		
+		searchedFoodTruck.setFocus(true);
+		
+		VerticalPanel formPanel = new VerticalPanel();
+        formPanel.add(addPanel);
+       
+        RootPanel.get("searchFieldContainer").add(formPanel);
 	}
 	
 	private void filterTruck() {
@@ -201,6 +203,12 @@ public class FoodMap {
 					+ "<img src ='/images/Okay.png'></img>"
 					+ "<img src ='/images/Meh.png'></img>"
 					+ "<img src ='/images/FML.png'></img>", true);
+			
+			Good.setStyleName("Good");
+			Okay.setStyleName("Okay");
+			Meh.setStyleName("Meh");
+			FML.setStyleName("FML");
+			
 			foodTruckFlexTable.setText(row, 0, foodTruck.getName());
 			foodTruckFlexTable.setText(row, 1, foodTruck.getDescription());	
 			foodTruckFlexTable.setWidget(row, 3, images);	
@@ -215,6 +223,27 @@ public class FoodMap {
 		for (FoodTruck trucks: foodTruck)
 			displayFoodTruck(trucks); 
 	}	
+	
+	private MultiWordSuggestOracle getVendorOracle() {
+		final MultiWordSuggestOracle vendorOracle = new MultiWordSuggestOracle();
+
+		foodTruckService.getFoodTrucks(new AsyncCallback<List<FoodTruck>>(){
+			@Override
+			public void onFailure(Throwable error){
+				return; 
+			}
+
+			@Override
+			public void onSuccess(List<FoodTruck> trucks) {	
+				allTruck = new ArrayList<FoodTruck>(trucks);
+				for (FoodTruck foodTruck: allTruck) { 
+					String name = foodTruck.getName();
+					vendorOracle.add(name);
+				}
+			}
+		});
+        return vendorOracle;
+	}
 
 	private void loadMap() 
 	{

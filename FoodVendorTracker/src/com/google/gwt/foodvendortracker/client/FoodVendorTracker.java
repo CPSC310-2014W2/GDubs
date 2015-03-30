@@ -96,7 +96,7 @@ public class FoodVendorTracker implements EntryPoint {
 	public void loadMain() {
 	    signOutLink.setHref(loginInfo.getLogoutUrl());
 	    
-		RootPanel.get("textFieldContainer").add(userLabel);
+		RootPanel.get("searchFieldContainer").add(userLabel);
 		signOutLink.setStyleName("navLink");
 		favLink.setStyleName("navLink");
 		ratingLink.setStyleName("navLink");
