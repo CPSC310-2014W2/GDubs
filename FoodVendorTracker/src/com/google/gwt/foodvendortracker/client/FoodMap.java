@@ -1,6 +1,7 @@
 package com.google.gwt.foodvendortracker.client;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Arrays;
 import java.util.List;
 
@@ -48,6 +49,7 @@ public class FoodMap {
 	private Button searchButton 							 = 		new Button("Search")						;
 	private Label lastUpdatedLabel 							 = 		new Label()									;
 	private ScrollPanel scrollPanel							 = 		new ScrollPanel()							;
+	private MapWidget map;
 	
 	private Image Good = new Image("/images/Good.png"); 
 	private Image Okay = new Image("/images/Okay.png"); 
@@ -222,6 +224,9 @@ public class FoodMap {
 		
 		for (FoodTruck trucks: foodTruck)
 			displayFoodTruck(trucks); 
+		
+		loadQueryMarkers2(foodTruck);
+		
 	}	
 	
 	private MultiWordSuggestOracle getVendorOracle() {
@@ -247,96 +252,152 @@ public class FoodMap {
 
 	private void loadMap() 
 	{
+		double vanLat = 49.2859026428645;
+		double vanLng = -123.117533501725;
+		LatLng Vancouver 		= 		LatLng.newInstance(vanLat, vanLng)		;
+		map 	= 		new MapWidget(Vancouver, 17)			;
+		map.setSize("100%", "100%")				;
+		map.addControl(new LargeMapControl())	;
+		final DockLayoutPanel dock = new DockLayoutPanel(Unit.PX)		;
+		dock.addNorth(map, 500)											;				
+		RootPanel.get("mapContainer").add(dock)							;	 
+	}
+	
+	
+	public void loadQueryMarkers()
+	{
+	
 		foodTruckService.getFoodTrucks(new AsyncCallback<List<FoodTruck>>()
-		{
-			@Override
-			public void onFailure(Throwable caught) 
-			{
-				return;			
-			}
-
-			@Override
-			public void onSuccess(final List<FoodTruck> result) 
-			{
-				double vanLat = 49.2859026428645;
-				double vanLng = -123.117533501725;
-				LatLng Vancouver 		= 		LatLng.newInstance(vanLat, vanLng)		;
-				final MapWidget map 	= 		new MapWidget(Vancouver, 17)			;
-				map.setSize("100%", "100%")				;
-				map.addControl(new LargeMapControl())	;
-
-				for(FoodTruck tr : result)
 				{
-					double latitude 	= 	tr.getLatitude()							;
-					double longitude 	= 	tr.getLongitude()							;
-					LatLng cord 		= 	LatLng.newInstance(latitude, longitude)		;
-					map.addOverlay(new Marker(cord))	;
-					coordinates.add(cord)				;
-				}
-				
-				final DockLayoutPanel dock = new DockLayoutPanel(Unit.PX)		;
-				dock.addNorth(map, 500)											;				
-				RootPanel.get("mapContainer").add(dock)							;	 
-				
-				map.addMapClickHandler(new MapClickHandler()
-				{
-					public void onClick(MapClickEvent e) 
+					@Override
+					public void onFailure(Throwable caught) 
 					{
-						boolean success = false;
-						LatLng mark_coords = null;
-						int counter = 0;
-						for(LatLng coord : coordinates)
-						{
-							double LatEvent 	= 	e.getLatLng().getLatitude()		;
-							double LngEvent     =   e.getLatLng().getLongitude()	;
-							double LatMarker    =	coord.getLatitude()				;
-							double LngMarker    =   coord.getLongitude()			;
-							// result >0 LatEvent is > than LatMarker if < 0 it is less else is is equal
-							
-							//+0003, +- 00015
-							double LatMarker_larger 	 =	 LatMarker  +  0.0003   ;
-							double LatMarker_smaller	 =	 LatMarker  -  0.0003   ;  
-							double LngMarker_larger		 = 	 LngMarker  +  0.00008  ;
-							double LngMarker_smaller	 = 	 LngMarker  -  0.00008  ;
-							
-							int result1	 	= 	  Double.compare(LatEvent, LatMarker_larger)	;
-							int result2 	= 	  Double.compare(LatEvent, LatMarker_smaller)	;
-							int result3	 	= 	  Double.compare(LngEvent, LngMarker_larger)	;
-							int result4 	= 	  Double.compare(LngEvent, LngMarker_smaller)	;
-							
-							//1 1 -1 1
-							if((result1 <= 0 && result2 >= 0) && (result3 <= 0 && result4 >= 0))
-							{
-								success 		= 	true	;	
-								mark_coords 	= 	coord	;
-								break;
-							}
-							counter ++;
-						}
-						String description = result.get(counter).getDescription()	;
-						String name = result.get(counter).getName()					;
-						
-						if(success == true)
-						{		
-							map.getInfoWindow().open(mark_coords,
-									new InfoWindowContent(name +  "<br />" + description));
-							
-						}						
+						return;			
 					}
-				});	
-			}
-		});
+
+					@Override
+					public void onSuccess(final List<FoodTruck> result) 
+					{
+						map.clearOverlays();
+						addCoords(result);
+						map.addMapClickHandler(new MapClickHandler()
+						{
+							public void onClick(MapClickEvent e) 
+							{
+								boolean success = false;
+								LatLng mark_coords = null;
+								int counter = 0;
+								for(LatLng coord : coordinates)
+								{
+									double LatEvent 	= 	e.getLatLng().getLatitude()		;
+									double LngEvent     =   e.getLatLng().getLongitude()	;
+									double LatMarker    =	coord.getLatitude()				;
+									double LngMarker    =   coord.getLongitude()			;
+									// result >0 LatEvent is > than LatMarker if < 0 it is less else is is equal
+									
+									//+0003, +- 00015
+									double LatMarker_larger 	 =	 LatMarker  +  0.0003   ;
+									double LatMarker_smaller	 =	 LatMarker  -  0.0003   ;  
+									double LngMarker_larger		 = 	 LngMarker  +  0.00008  ;
+									double LngMarker_smaller	 = 	 LngMarker  -  0.00008  ;
+									
+									int result1	 	= 	  Double.compare(LatEvent, LatMarker_larger)	;
+									int result2 	= 	  Double.compare(LatEvent, LatMarker_smaller)	;
+									int result3	 	= 	  Double.compare(LngEvent, LngMarker_larger)	;
+									int result4 	= 	  Double.compare(LngEvent, LngMarker_smaller)	;
+									
+									//1 1 -1 1
+									if((result1 <= 0 && result2 >= 0) && (result3 <= 0 && result4 >= 0))
+									{
+										success 		= 	true	;	
+										mark_coords 	= 	coord	;
+										break;
+									}
+									counter ++;
+								}
+								String description = result.get(counter).getDescription()	;
+								String name = result.get(counter).getName()					;
+								
+								if(success == true)
+								{		
+									map.getInfoWindow().open(mark_coords,
+											new InfoWindowContent(name +  "<br />" + description));
+									
+								}						
+							}
+						});	
+					}
+				});		
+	}
+	
+	public void loadQueryMarkers2(final List<FoodTruck> result)
+	{
+		map.clearOverlays()			;
+		addCoords(result)			;
+		Random randomGenerator = new Random()							;
+		int randomInt = randomGenerator.nextInt(result.size())			;
+		double Lat = result.get(randomInt).getLatitude()				;
+		double Lng = result.get(randomInt).getLongitude()				;	
+		LatLng center 		= 		LatLng.newInstance(Lat, Lng)		;
+		map.setCenter(center);
+		
+//		map.addMapClickHandler(new MapClickHandler()
+//		{
+//			public void onClick(MapClickEvent e) 
+//			{
+//				boolean success = false;
+//				LatLng mark_coords = null;
+//				int counter = 0;
+//				for(LatLng coord : coordinates)
+//				{
+//					double LatEvent 	= 	e.getLatLng().getLatitude()		;
+//					double LngEvent     =   e.getLatLng().getLongitude()	;
+//					double LatMarker    =	coord.getLatitude()				;
+//					double LngMarker    =   coord.getLongitude()			;
+//					// result >0 LatEvent is > than LatMarker if < 0 it is less else is is equal
+//					
+//					//+0003, +- 00015
+//					double LatMarker_larger 	 =	 LatMarker  +  0.0003   ;
+//					double LatMarker_smaller	 =	 LatMarker  -  0.0003   ;  
+//					double LngMarker_larger		 = 	 LngMarker  +  0.00008  ;
+//					double LngMarker_smaller	 = 	 LngMarker  -  0.00008  ;
+//					
+//					int result1	 	= 	  Double.compare(LatEvent, LatMarker_larger)	;
+//					int result2 	= 	  Double.compare(LatEvent, LatMarker_smaller)	;
+//					int result3	 	= 	  Double.compare(LngEvent, LngMarker_larger)	;
+//					int result4 	= 	  Double.compare(LngEvent, LngMarker_smaller)	;
+//					
+//			
+//					if((result1 <= 0 && result2 >= 0) && (result3 <= 0 && result4 >= 0))
+//					{
+//						success 		= 	true	;	
+//						mark_coords 	= 	coord	;
+//						break;
+//					}
+//					counter ++;
+//				}
+//				String description = result.get(counter).getDescription()	;
+//				String name = result.get(counter).getName()					;
+//				
+//				if(success == true)
+//				{		
+//					map.getInfoWindow().open(mark_coords,
+//							new InfoWindowContent(name +  "<br />" + description));
+//					
+//				}						
+//			}
+//		});	
+	}
+	
+	public void addCoords(List<FoodTruck> result)
+	{
+		for(FoodTruck tr : result)
+		{
+			double latitude 	= 	tr.getLatitude()							;
+			double longitude 	= 	tr.getLongitude()							;
+			LatLng cord 		= 	LatLng.newInstance(latitude, longitude)		;
+			map.addOverlay(new Marker(cord))	;
+			coordinates.add(cord)				;
+		}	
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-

@@ -15,11 +15,12 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gwt.foodvendortracker.client.FoodTruckService;
 import com.google.gwt.foodvendortracker.client.NotLoggedInException;
+import com.google.gwt.foodvendortracker.client.RatingService;
 import com.google.gwt.foodvendortracker.client.UserFavoriteService;
 import com.google.gwt.foodvendortracker.shared.FoodTruck;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-public class FoodTruckServiceImpl extends RemoteServiceServlet implements FoodTruckService, UserFavoriteService {
+public class FoodTruckServiceImpl extends RemoteServiceServlet implements FoodTruckService, UserFavoriteService, RatingService {
 	private static final PersistenceManagerFactory PMF = 
 			JDOHelper.getPersistenceManagerFactory("transactions-optional");
 	
@@ -142,6 +143,69 @@ public class FoodTruckServiceImpl extends RemoteServiceServlet implements FoodTr
 		}
 		return trucks;
 	}
+	
+	public void addRating(String rating, FoodTruck foodTruck) throws NotLoggedInException
+	{
+		checkLoggedIn();
+		PersistenceManager pm = getPersistenceManager();
+		try 
+		{
+			pm.makePersistent(new Rating(getUser(), foodTruck, rating));
+		}
+		finally
+		{
+			pm.close();
+		}
+	}
+	
+	public void removeRating(FoodTruck foodTruck) throws NotLoggedInException
+	{
+		checkLoggedIn();
+		PersistenceManager pm = getPersistenceManager();
+		try
+		{
+			long deleteCount = 0;
+			Query q = pm.newQuery();
+			q.declareParameters("com.google.appengine.api.users.User u");
+			List<Rating> ratings = (List<Rating>) q.execute(getUser());
+			for(Rating f : ratings)
+			{
+				if(f.getFoodTruck().getName().equals(foodTruck.getName()))
+				{
+					deleteCount++;
+					pm.deletePersistent(f);
+				}
+			}
+		}
+		finally
+		{
+			pm.close();
+		}
+	}
+	
+	  public ArrayList<FoodTruck> getRatings() throws NotLoggedInException
+	  {
+		    checkLoggedIn();
+			PersistenceManager pm = getPersistenceManager();
+			ArrayList<FoodTruck> ratedTrucks = new ArrayList<FoodTruck>();
+			try
+			{
+				Query q = pm.newQuery(Favorite.class, "user == u");
+				q.declareParameters("com.google.appengine.api.users.User u");
+				q.setOrdering("createDate");
+				List<Rating> ratings = (List<Rating>) q.execute(getUser());
+				for(Rating f : ratings)
+				{
+					ratedTrucks.add(f.getFoodTruck());
+				}
+			}
+			finally
+			{
+				pm.close();
+			}
+			return ratedTrucks;
+		
+	  }
 	
 	private void checkLoggedIn() throws NotLoggedInException 
 	  {
