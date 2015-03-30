@@ -3,7 +3,6 @@ package com.google.gwt.foodvendortracker.client;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.List;
-import java.util.logging.Logger;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -46,20 +45,16 @@ public class FoodMap {
 	private Button searchButton 							 = 		new Button("Search")						;
 	private Label lastUpdatedLabel 							 = 		new Label()									;
 	private ScrollPanel scrollPanel							 = 		new ScrollPanel()							;
-	private MapWidget map;
+	private ArrayList<FoodTruck> allTruck 					 = 		new ArrayList<FoodTruck>()					;
+	private ArrayList<FoodTruck> filterTruck				 = 		new ArrayList<FoodTruck>()					;
+	private ArrayList<FoodTruck> showTruck 					 = 		new ArrayList<FoodTruck>()					;
+	private Image Good 										 = 		new Image("/images/Good.png")				; 
+	private Image Okay										 = 		new Image("/images/Okay.png")				;	 
+	private Image Meh 										 = 		new Image("/images/Meh.png")				; 
+	private Image FML										 = 		new Image("/images/FML.png")				; 
+	private String searchText 								 =		""											;
+	private MapWidget map																						;
 	
-	private Image Good = new Image("/images/Good.png"); 
-	private Image Okay = new Image("/images/Okay.png"); 
-	private Image Meh = new Image("/images/Meh.png"); 
-	private Image FML = new Image("/images/FML.png"); 
-	
-	private ArrayList<FoodTruck> allTruck = new ArrayList<FoodTruck>();
-	private ArrayList<FoodTruck> filterTruck = new ArrayList<FoodTruck>();
-	private ArrayList<FoodTruck> showTruck = new ArrayList<FoodTruck>();
-	private static final Logger LOG = Logger.getLogger(FoodMap.class.getName());
-	
-	private String searchText ="";
-
 	public void loadFoodTruck() 
 	{
 		Maps.loadMapsApi(API_KEY, "2", false, new Runnable() 
@@ -70,42 +65,42 @@ public class FoodMap {
 			}
 		});
 	}
+	
 	private void buildUi() 
 	{
 		loadMap();	
     	fetchTruck(allTruck);
-
 		searchedFoodTruck.setStyleName("searchBar");
 		searchButton.setStyleName("searchButton");
 
-		headerFlexTable.setText(0, 0, "Name")					;		
-		headerFlexTable.setText(0, 1, "Description")			;
-		headerFlexTable.setText(0, 2, "Favourite")				;
-		headerFlexTable.setText(0, 3, "Rating")					;
-		headerFlexTable.getRowFormatter().addStyleName(0, "tableHeader");
-		headerFlexTable.getColumnFormatter().setWidth(0, "100px");
-		headerFlexTable.getColumnFormatter().setWidth(1, "200px");
-		headerFlexTable.getColumnFormatter().setWidth(2, "50px");
-		headerFlexTable.getColumnFormatter().setWidth(3, "250px");
+		headerFlexTable.setText(0, 0, "Name")									;		
+		headerFlexTable.setText(0, 1, "Description")							;
+		headerFlexTable.setText(0, 2, "Favourite")								;
+		headerFlexTable.setText(0, 3, "Rating")									;
+		headerFlexTable.getRowFormatter().addStyleName(0, "tableHeader")		;
+		headerFlexTable.getColumnFormatter().setWidth(0, "100px")				;
+		headerFlexTable.getColumnFormatter().setWidth(1, "200px")				;
+		headerFlexTable.getColumnFormatter().setWidth(2, "50px")				;	
+		headerFlexTable.getColumnFormatter().setWidth(3, "250px")				;
 
-		foodTruckFlexTable.getColumnFormatter().setWidth(0, "100px");
-		foodTruckFlexTable.getColumnFormatter().setWidth(1, "200px");
-		foodTruckFlexTable.getColumnFormatter().setWidth(2, "50px");
-		foodTruckFlexTable.getColumnFormatter().setWidth(3, "250px");
+		foodTruckFlexTable.getColumnFormatter().setWidth(0, "100px")			;
+		foodTruckFlexTable.getColumnFormatter().setWidth(1, "200px")			;
+		foodTruckFlexTable.getColumnFormatter().setWidth(2, "50px")				;
+		foodTruckFlexTable.getColumnFormatter().setWidth(3, "250px")			;
 		
-	    addPanel.add(searchedFoodTruck);
-	    addPanel.add(searchButton);
-	    headerPanel.add(headerFlexTable);
-	    RootPanel.get("searchFieldContainer").add(addPanel);
-	    RootPanel.get("textFieldContainer").add(headerPanel);
+	    addPanel.add(searchedFoodTruck)							;
+	    addPanel.add(searchButton)								;
+	    headerPanel.add(headerFlexTable)						;
+	    RootPanel.get("searchFieldContainer").add(addPanel)		;
+	    RootPanel.get("textFieldContainer").add(headerPanel)	;
 
 	    foodTruckPanel.add(foodTruckFlexTable)	;
-	    foodTruckPanel.add(lastUpdatedLabel);
+	    foodTruckPanel.add(lastUpdatedLabel)	;
 	    
-	    scrollPanel = new ScrollPanel(foodTruckFlexTable);
-	    scrollPanel.setSize("100%", "450px");
-	    RootPanel.get("mainContent").add(scrollPanel);
-	    searchedFoodTruck.setFocus(true);
+	    scrollPanel = new ScrollPanel(foodTruckFlexTable)	;
+	    scrollPanel.setSize("100%", "450px")				;
+	    RootPanel.get("mainContent").add(scrollPanel)		;
+	    searchedFoodTruck.setFocus(true)					;
 	    
 	    searchButton.addClickHandler(new ClickHandler() {
 	        public void onClick(ClickEvent event) {
@@ -123,7 +118,6 @@ public class FoodMap {
 	       }
 	    });  
 	}
-	
 	
 	private void fetchTruck(List<FoodTruck> foodTruck) {
 		foodTruckService.getFoodTrucks(new AsyncCallback<List<FoodTruck>>(){
@@ -143,33 +137,34 @@ public class FoodMap {
 	
 	private void searchTruck() 
 	{
-		searchedFoodTruck.setFocus(true);
-		setSearch(searchedFoodTruck.getText().toLowerCase().trim());
-		filterTruck();
-		setSearchTrucks(filterTruck); 
-		displayTrucks();
+		searchedFoodTruck.setFocus(true)							;
+		setSearch(searchedFoodTruck.getText().toLowerCase().trim())	;
+		filterTruck()												;
+		setSearchTrucks(filterTruck)								; 
+		displayTrucks()												;
 	}
 	
-	private void setSearch(String searchText) {
-		this.searchText = searchText; 
-		searchedFoodTruck.setText(searchText);
-		
-		searchedFoodTruck.setFocus(true);
-		
-		VerticalPanel formPanel = new VerticalPanel();
-        formPanel.add(addPanel);
-       
-        RootPanel.get("searchFieldContainer").add(formPanel);
+	private void setSearch(String searchText) 
+	{
+		this.searchText = searchText							; 
+		searchedFoodTruck.setText(searchText)					;	
+		searchedFoodTruck.setFocus(true)						;
+		VerticalPanel formPanel = new VerticalPanel()			;
+        formPanel.add(addPanel)									;  
+        RootPanel.get("searchFieldContainer").add(formPanel)	;
 	}
 	
-	private void filterTruck() {
-		if (searchText.equals("")) {
+	private void filterTruck() 
+	{
+		if (searchText.equals("")) 
+		{
 			filterTruck = new ArrayList<FoodTruck>(allTruck);
 			return; 
 		}
 		
 		ArrayList<FoodTruck> match = new ArrayList<FoodTruck>();
-		for (FoodTruck foodTruck: allTruck) {
+		for (FoodTruck foodTruck: allTruck) 
+		{
 			String name = null;
 			String description = null; 
 			try {
@@ -189,11 +184,13 @@ public class FoodMap {
 		filterTruck = new ArrayList<FoodTruck>(match); 		
 	}
 	
-	private void setSearchTrucks(ArrayList<FoodTruck> showTrucks) {
+	private void setSearchTrucks(ArrayList<FoodTruck> showTrucks) 
+	{
 		this.showTruck = new ArrayList<FoodTruck>(showTrucks);
 	}
 	
-	private void displayTrucks() {
+	private void displayTrucks() 
+	{
 		displayFoodTrucks(showTruck);
 	}
 	
@@ -229,7 +226,8 @@ public class FoodMap {
 			foodTruckFlexTable.setWidget(row, 3, images);	
 	}
 	
-	private void displayFoodTrucks(List<FoodTruck> foodTruck) {
+	private void displayFoodTrucks(List<FoodTruck> foodTruck) 
+	{
 		int row = foodTruckFlexTable.getRowCount();
 		for (int i=0; i < row; i++) {
 			foodTruckFlexTable.removeRow(0);
@@ -242,7 +240,8 @@ public class FoodMap {
 		
 	}	
 	
-	private MultiWordSuggestOracle getVendorOracle() {
+	private MultiWordSuggestOracle getVendorOracle() 
+	{
 		final MultiWordSuggestOracle vendorOracle = new MultiWordSuggestOracle();
 
 		foodTruckService.getFoodTrucks(new AsyncCallback<List<FoodTruck>>(){
@@ -265,12 +264,12 @@ public class FoodMap {
 
 	private void loadMap() 
 	{
-		double vanLat = 49.2859026428645;
-		double vanLng = -123.117533501725;
-		LatLng Vancouver 		= 		LatLng.newInstance(vanLat, vanLng)		;
-		map 	= 		new MapWidget(Vancouver, 17)			;
-		map.setSize("100%", "100%")				;
-		map.addControl(new LargeMapControl())	;
+		double vanLat 	 = 		49.2859026428645						;
+		double vanLng 	 = 		-123.117533501725						;
+		LatLng Vancouver = 		LatLng.newInstance(vanLat, vanLng)		;
+		map 			 = 		new MapWidget(Vancouver, 17)			;
+		map.setSize("100%", "100%")										;
+		map.addControl(new LargeMapControl())							;
 		final DockLayoutPanel dock = new DockLayoutPanel(Unit.PX)		;
 		dock.addNorth(map, 500)											;				
 		RootPanel.get("mapContainer").add(dock)							;	 
@@ -283,33 +282,37 @@ public class FoodMap {
 		addCoords(result)			;
 		Random randomGenerator = new Random()							;
 		int randomInt = randomGenerator.nextInt(result.size())			;
-		double Lat = result.get(randomInt).getLatitude()				;
-		double Lng = result.get(randomInt).getLongitude()				;	
-		LatLng center 		= 		LatLng.newInstance(Lat, Lng)		;
+		double lat = result.get(randomInt).getLatitude()				;
+		double lng = result.get(randomInt).getLongitude()				;	
+		LatLng center 		= 		LatLng.newInstance(lat, lng)		;
 		map.setCenter(center);
 		
 		map.addMapClickHandler(new MapClickHandler()
 		{
 			public void onClick(MapClickEvent e) 
 			{
-				boolean success = false;
-				LatLng mark_coords = null;
-				int counter = 0;
+				boolean success 	=	 false	;
+				LatLng mark_coords 	=	 null	;
+				int counter 		= 	 0		;
+				
 				for(FoodTruck foodtruck : result)
 				{
 					
-					double LatEvent 	= 	e.getLatLng().getLatitude()		;
-					double LngEvent     =   e.getLatLng().getLongitude()	;
-					double LatMarker    =	foodtruck.getLatitude()				;
-					double LngMarker    =   foodtruck.getLongitude()			;
+					double LatEvent 	= 	e.getLatLng().getLatitude()						;
+					double LngEvent     =   e.getLatLng().getLongitude()					;
+					double LatMarker    =	foodtruck.getLatitude()							;
+					double LngMarker    =   foodtruck.getLongitude()						;
+					double lateral      =   0.0003											;
+					double vertical     =   0.00008											;
 					LatLng coord        =   LatLng.newInstance(LatMarker, LngMarker)		;
-					// result >0 LatEvent is > than LatMarker if < 0 it is less else is is equal
+					int zero			=   0												;
 					
-					//+0003, +- 00015
-					double LatMarker_larger 	 =	 LatMarker  +  0.0003   ;
-					double LatMarker_smaller	 =	 LatMarker  -  0.0003   ;  
-					double LngMarker_larger		 = 	 LngMarker  +  0.00008  ;
-					double LngMarker_smaller	 = 	 LngMarker  -  0.00008  ;
+					
+					double LatMarker_larger 	 =	 LatMarker  +  lateral   ;
+					double LatMarker_smaller	 =	 LatMarker  -  lateral   ;  
+					double LngMarker_larger		 = 	 LngMarker  +  vertical  ;
+					double LngMarker_smaller	 = 	 LngMarker  -  vertical  ;
+					
 					
 					int result1	 	= 	  Double.compare(LatEvent, LatMarker_larger)	;
 					int result2 	= 	  Double.compare(LatEvent, LatMarker_smaller)	;
@@ -317,7 +320,7 @@ public class FoodMap {
 					int result4 	= 	  Double.compare(LngEvent, LngMarker_smaller)	;
 					
 			
-					if((result1 <= 0 && result2 >= 0) && (result3 <= 0 && result4 >= 0))
+					if((result1 <= zero && result2 >= zero) && (result3 <= zero && result4 >= zero))
 					{
 						success 		= 	true	;	
 						mark_coords 	= 	coord	;
@@ -345,7 +348,7 @@ public class FoodMap {
 			double latitude 	= 	tr.getLatitude()							;
 			double longitude 	= 	tr.getLongitude()							;
 			LatLng cord 		= 	LatLng.newInstance(latitude, longitude)		;
-			map.addOverlay(new Marker(cord))	;
+			map.addOverlay(new Marker(cord))									;
 		}	
 	}
 }

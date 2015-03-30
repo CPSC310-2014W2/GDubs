@@ -42,6 +42,15 @@
     <url-pattern>/foodvendortracker/Favorite</url-pattern>
   </servlet-mapping>
   
+     <servlet>
+    <servlet-name>RatingService</servlet-name>
+    <servlet-class>com.google.gwt.foodvendortracker.server.FoodTruckServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>RatingService</servlet-name>
+    <url-pattern>/foodvendortracker/Rating</url-pattern>
+  </servlet-mapping>
   
   
 </web-app>
