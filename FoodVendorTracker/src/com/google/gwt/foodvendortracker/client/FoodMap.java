@@ -3,6 +3,7 @@ package com.google.gwt.foodvendortracker.client;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -70,6 +71,8 @@ public class FoodMap {
 	{
 		loadMap();	
     	fetchTruck(allTruck);
+    	truckHandler(); 
+    	
 		searchedFoodTruck.setStyleName("searchBar");
 		searchButton.setStyleName("searchButton");
 
@@ -80,13 +83,13 @@ public class FoodMap {
 		headerFlexTable.getRowFormatter().addStyleName(0, "tableHeader")		;
 		headerFlexTable.getColumnFormatter().setWidth(0, "100px")				;
 		headerFlexTable.getColumnFormatter().setWidth(1, "200px")				;
-		headerFlexTable.getColumnFormatter().setWidth(2, "50px")				;	
-		headerFlexTable.getColumnFormatter().setWidth(3, "250px")				;
+		headerFlexTable.getColumnFormatter().setWidth(2, "100px")				;	
+		headerFlexTable.getColumnFormatter().setWidth(3, "350px")				;
 
 		foodTruckFlexTable.getColumnFormatter().setWidth(0, "100px")			;
 		foodTruckFlexTable.getColumnFormatter().setWidth(1, "200px")			;
-		foodTruckFlexTable.getColumnFormatter().setWidth(2, "50px")				;
-		foodTruckFlexTable.getColumnFormatter().setWidth(3, "250px")			;
+		foodTruckFlexTable.getColumnFormatter().setWidth(2, "100px")			;
+		foodTruckFlexTable.getColumnFormatter().setWidth(3, "350px")			;
 		
 	    addPanel.add(searchedFoodTruck)							;
 	    addPanel.add(searchButton)								;
@@ -101,24 +104,37 @@ public class FoodMap {
 	    scrollPanel.setSize("100%", "450px")				;
 	    RootPanel.get("mainContent").add(scrollPanel)		;
 	    searchedFoodTruck.setFocus(true)					;
-	    
-	    searchButton.addClickHandler(new ClickHandler() {
-	        public void onClick(ClickEvent event) {
-	        	searchTruck();
-	        }
-	    });
-	    
-	    searchedFoodTruck.addKeyDownHandler(new KeyDownHandler() {
-	        public void onKeyDown(KeyDownEvent event) 
-	        {
-	          if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
-	          {
-	            searchTruck();
-	          }
-	       }
-	    });  
 	}
 	
+	private void truckHandler() {
+		 searchButton.addClickHandler(new ClickHandler() {
+		        public void onClick(ClickEvent event) {
+		        	searchTruck();
+		        }
+		    });
+		 
+		 searchedFoodTruck.addKeyDownHandler(new KeyDownHandler() {
+		        public void onKeyDown(KeyDownEvent event) 
+		        {
+		          if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
+		          {
+		        	searchTruck();
+		          }
+		       }
+		 });
+		 
+		 /* Enable this to force users to click Search Button instead of Enter
+		 searchedFoodTruck.addKeyPressHandler(new KeyPressHandler() {
+		        @Override
+		        public void onKeyPress(KeyPressEvent event) {
+		            int key = event.getNativeEvent().getKeyCode();
+		            if (key == KeyCodes.KEY_ENTER) {
+		                event.stopPropagation();
+		            }
+		        }
+		});
+		*/
+	}
 	private void fetchTruck(List<FoodTruck> foodTruck) {
 		foodTruckService.getFoodTrucks(new AsyncCallback<List<FoodTruck>>(){
 				@Override
@@ -148,10 +164,11 @@ public class FoodMap {
 	{
 		this.searchText = searchText							; 
 		searchedFoodTruck.setText(searchText)					;	
-		searchedFoodTruck.setFocus(true)						;
 		VerticalPanel formPanel = new VerticalPanel()			;
         formPanel.add(addPanel)									;  
         RootPanel.get("searchFieldContainer").add(formPanel)	;
+		searchedFoodTruck.setFocus(true)						;
+
 	}
 	
 	private void filterTruck() 
@@ -207,18 +224,7 @@ public class FoodMap {
 			Meh.setStyleName("Meh");
 			FML.setStyleName("FML");
 			
-			final HTML star = new HTML("<img src ='/images/star.png'>", true);
-			
-			
-			star.addClickHandler(new ClickHandler() 
-			{
-	            public void onClick(ClickEvent event) 
-	            {
-	            	star.setStyleName("navLink");
-	            }
-			
-	        });
-			
+			HTML star = new HTML("<img src ='/images/star.jpg'>", true);
 			
 			foodTruckFlexTable.setText(row, 0, foodTruck.getName());
 			foodTruckFlexTable.setText(row, 1, foodTruck.getDescription());	

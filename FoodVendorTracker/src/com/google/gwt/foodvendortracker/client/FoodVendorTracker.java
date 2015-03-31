@@ -8,7 +8,9 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -26,7 +28,6 @@ public class FoodVendorTracker implements EntryPoint {
 
 	private VerticalPanel mainPanel = new VerticalPanel();  
 	private VerticalPanel sidebarPanel = new VerticalPanel();  
-
 	
 	private LoginInfo loginInfo = null;
 	private VerticalPanel loginPanel = new VerticalPanel();
@@ -47,8 +48,8 @@ public class FoodVendorTracker implements EntryPoint {
 	private final FoodTruckServiceAsync foodTruckService = GWT.create(FoodTruckService.class);
 	private final UserFavoriteServiceAsync userFavoriteService = GWT.create(UserFavoriteService.class);
 	// creating links on sidebar
-	private Anchor favLink = new Anchor("Favourite" + "\n\r" + "\u2665");// heart icon
-	private Anchor ratingLink = new Anchor("Rating" + "\n\r" + "\u2605"); // star icon
+	final Anchor favLink = new Anchor("Favourite");
+	final Anchor ratingLink = new Anchor("Rating");
 
 	private void handleError(Throwable error) {
         Window.alert(error.getMessage());
@@ -84,7 +85,7 @@ public class FoodVendorTracker implements EntryPoint {
 	      }
 	    });
 	}
-		
+	
 	public void loadLogin() {
 		// Assemble login panel.
 		signInLink.setHref(loginInfo.getLoginUrl());
@@ -94,24 +95,10 @@ public class FoodVendorTracker implements EntryPoint {
 	}
 	
 	public void loadMain() {
-	    signOutLink.setHref(loginInfo.getLogoutUrl());
-	    
 		RootPanel.get("searchFieldContainer").add(userLabel);
-		signOutLink.setStyleName("navLink");
-		favLink.setStyleName("navLink");
-		ratingLink.setStyleName("navLink");
-
-		
-        sidebarPanel.add(signOutLink);
-        sidebarPanel.add(favLink);
-        sidebarPanel.add(ratingLink);
-
-        
-        // TODO Associate the Main panel with the HTML host page. 
-		RootPanel.get("navigation").add(sidebarPanel);
-        RootPanel.get("mapContainer").add(mainPanel);
+		loadNavigation(); 
+		popUpNavigation(); 
         foodMap.loadFoodTruck(); 
-
 	}
 		
 	public void loadAdmin() {	
@@ -128,7 +115,6 @@ public class FoodVendorTracker implements EntryPoint {
 		RootPanel.get("uploadButtonContainer").add(uploadButton);
 		sidebarPanel.add(signOutLink);
 		
-		// TODO Associate the Main panel with the HTML host page. 
 		RootPanel.get("navigation").add(sidebarPanel);
 	    
 	    // Listen for mouse events on the upload button.
@@ -153,4 +139,52 @@ public class FoodVendorTracker implements EntryPoint {
 	      }
 	    });
 	}
+	
+	public void loadNavigation() {
+	    signOutLink.setHref(loginInfo.getLogoutUrl());
+	    
+		signOutLink.setStyleName("navLink");
+		favLink.setStyleName("navLink");
+		ratingLink.setStyleName("navLink");
+		
+        sidebarPanel.add(signOutLink);
+        sidebarPanel.add(favLink);
+        sidebarPanel.add(ratingLink);
+        
+
+		RootPanel.get("navigation").add(sidebarPanel);
+        RootPanel.get("mapContainer").add(mainPanel);
+	}
+	
+	public void popUpNavigation() {
+		
+		favLink.addClickHandler(new ClickHandler() {
+	        public void onClick(ClickEvent event) {
+	        	 new favPopup().center(); 
+	        }
+	    });
+		
+		ratingLink.addClickHandler(new ClickHandler() {
+	        public void onClick(ClickEvent event) {
+	        	new ratingPopup().center(); 
+	        }
+	    });
+	}
+	
+	private static class favPopup extends PopupPanel {
+		public favPopup() {
+			super(true);
+			setWidget(new HTML("Place Favourite Here" + "<br />" + "Favourites placeholder"));
+		}
+	}
+	
+	private static class ratingPopup extends PopupPanel {
+		public ratingPopup() {
+			super(true);
+			setWidget(new HTML("Place Rating Here" + "<br />" + "Ratings placeholder"));
+		}
+	}
+	
+	
+	
 }
