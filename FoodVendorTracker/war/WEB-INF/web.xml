@@ -13,22 +13,22 @@
   <!-- Servlets -->
   
   <servlet>
-    <servlet-name>loginService</servlet-name>
+    <servlet-name>LoginService</servlet-name>
     <servlet-class>com.google.gwt.foodvendortracker.server.LoginServiceImpl</servlet-class>
   </servlet>
   
   <servlet-mapping>
-    <servlet-name>loginService</servlet-name>
+    <servlet-name>LoginService</servlet-name>
     <url-pattern>/foodvendortracker/login</url-pattern>
   </servlet-mapping>
   
   <servlet>
-    <servlet-name>foodTruckService</servlet-name>
+    <servlet-name>FoodTruckService</servlet-name>
     <servlet-class>com.google.gwt.foodvendortracker.server.FoodTruckServiceImpl</servlet-class>
   </servlet>
   
   <servlet-mapping>
-    <servlet-name>foodTruckService</servlet-name>
+    <servlet-name>FoodTruckService</servlet-name>
     <url-pattern>/foodvendortracker/FoodTruck</url-pattern>
   </servlet-mapping>
   
@@ -39,9 +39,17 @@
   
   <servlet-mapping>
     <servlet-name>UserFavoriteService</servlet-name>
-    <url-pattern>/foodvendortracker/Favorite</url-pattern>
+    <url-pattern>/foodvendortracker/favorite</url-pattern>
   </servlet-mapping>
   
+     <servlet>
+    <servlet-name>RatingService</servlet-name>
+    <servlet-class>com.google.gwt.foodvendortracker.server.RatingServiceImpl</servlet-class>
+  </servlet>
   
+  <servlet-mapping>
+    <servlet-name>RatingService</servlet-name>
+    <url-pattern>/foodvendortracker/Rating</url-pattern>
+  </servlet-mapping>
   
 </web-app>

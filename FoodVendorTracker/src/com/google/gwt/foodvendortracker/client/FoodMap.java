@@ -40,6 +40,7 @@ public class FoodMap {
 	private static final String API_KEY                 	 = 		"AIzaSyBDGcnhtpy_BVkfa82aOb_mSPZezrQRiWs"	; 
 	private ArrayList<LatLng> coordinates					 = 		new ArrayList<LatLng>()						;
 	private final FoodTruckServiceAsync foodTruckService	 = 		GWT.create(FoodTruckService.class)			;
+	private final RatingServiceAsync ratingService			 = 		GWT.create(RatingService.class)				;
 	private VerticalPanel foodTruckPanel 					 = 		new VerticalPanel()							;
 	private VerticalPanel headerPanel 						 = 		new VerticalPanel()							;
 	private FlexTable foodTruckFlexTable 			  		 = 		new FlexTable()								;
@@ -198,17 +199,12 @@ public class FoodMap {
 		displayFoodTrucks(showTruck);
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void displayFoodTruck(FoodTruck foodTruck) 
 	{
 		int row = foodTruckFlexTable.getRowCount(); 
 		Rating rating = new Rating(0, 5, 1, "/images/cbg-star.png", "/images/cbg-stardeselected.png", "/images/cbg-starhover.png", 16, 16);
-		final Label lbl1 = new Label();
 		final Label lbl2 = new Label("selected: " + rating.getValue());
-//			HTML images = new HTML("<img src ='/images/Good.png'></img> "
-//					+ "<img src ='/images/Okay.png'></img>"
-//					+ "<img src ='/images/Meh.png'></img>"
-//					+ "<img src ='/images/FML.png'></img>", true);
 			foodTruckFlexTable.setText(row, 0, foodTruck.getName());
 			foodTruckFlexTable.setText(row, 1, foodTruck.getDescription());	
 			foodTruckFlexTable.setWidget(row, 3, rating);
@@ -216,7 +212,16 @@ public class FoodMap {
 			rating.addValueChangeHandler(new ValueChangeHandler() {
 				  public void onValueChange(ValueChangeEvent event) {
 				    lbl2.setText("you selected: " + event.getValue());
-				    lbl1.setText("");
+//				    ratingService.getAllRatings(new AsyncCallback<List<Rating>>(){
+//				    	@Override
+//				    	public void onFailure(Throwable caught){
+//				    		System.out.println(caught);
+//				    	}
+//				    	@Override
+//				    	public void onSuccess(List<Rating> ratings){
+//				    		System.out.println("successfully returned ratings");
+//				    	}
+//				    });
 				  }
 				});
 	}
