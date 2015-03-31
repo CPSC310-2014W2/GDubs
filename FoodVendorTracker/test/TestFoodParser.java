@@ -17,9 +17,10 @@ import com.google.gwt.foodvendortracker.server.FoodTruckParserHandler;
 import com.google.gwt.foodvendortracker.shared.FoodTruck;
 
 public class TestFoodParser {
-
+	
+	private String urlString = "http://m.uploadedit.com/ba3a/1426033445441.txt";
 	private List<FoodTruck> reg;
-	private FoodTruckParser parser = new FoodTruckParser();
+	private FoodTruckParser parser = new FoodTruckParser(urlString);
 
 	@Before
 	public void setUp() {

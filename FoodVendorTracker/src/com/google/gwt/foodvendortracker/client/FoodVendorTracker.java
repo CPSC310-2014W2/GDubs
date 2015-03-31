@@ -12,6 +12,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
@@ -40,6 +41,8 @@ public class FoodVendorTracker implements EntryPoint {
 	
 	private Label adminLabel = new Label("This is the admin page");
 	private Label userLabel = new Label("This is the non-admin page");
+
+	private TextBox urlText = new TextBox();
 
 	final FoodMap foodMap = new FoodMap();
 
@@ -85,7 +88,7 @@ public class FoodVendorTracker implements EntryPoint {
 	      }
 	    });
 	}
-	
+
 	public void loadLogin() {
 		// Assemble login panel.
 		signInLink.setHref(loginInfo.getLoginUrl());
@@ -93,7 +96,7 @@ public class FoodVendorTracker implements EntryPoint {
 		loginPanel.add(signInLink);
 		RootPanel.get("mainContent").add(loginPanel);
 	}
-	
+
 	public void loadMain() {
 		RootPanel.get("searchFieldContainer").add(userLabel);
 		loadNavigation(); 
@@ -102,6 +105,10 @@ public class FoodVendorTracker implements EntryPoint {
 	}
 		
 	public void loadAdmin() {	
+		
+		// loading url
+		RootPanel.get("textFieldContainer").add(urlText);
+		
 		// Set up sign out hyperlink.
 	    signOutLink.setHref(loginInfo.getLogoutUrl());
 	    
@@ -120,7 +127,8 @@ public class FoodVendorTracker implements EntryPoint {
 	    // Listen for mouse events on the upload button.
 	    uploadButton.addClickHandler(new ClickHandler() {
 	      public void onClick(ClickEvent event) {
-	    	  foodTruckService.parseFoodTruckData(new AsyncCallback<Void>(){
+	    	  String urlString = urlText.getText();
+	    	  foodTruckService.parseFoodTruckData(urlString, new AsyncCallback<Void>(){
 	  			public void onFailure(Throwable error){
 	  				displayLabel.setText("Failure to add food truck: " + error.toString());
 	  			}

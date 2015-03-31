@@ -13,12 +13,11 @@ import com.google.gwt.foodvendortracker.shared.FoodTruck;
 
 public class FoodTruckParser {
 
-	
-	private static final String urlString = "http://m.uploadedit.com/ba3a/1426033445441.txt";
+	private String urlString;
 	private List<FoodTruck> foodTruckList = new ArrayList<>();
 	
-	public FoodTruckParser() {
-
+	public FoodTruckParser(String urlString) {
+	this.urlString = urlString;
 	}
 
 	public List<FoodTruck> getFoodTruckList(){

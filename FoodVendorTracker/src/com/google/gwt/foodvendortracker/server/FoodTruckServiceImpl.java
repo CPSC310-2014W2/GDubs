@@ -24,14 +24,17 @@ public class FoodTruckServiceImpl extends RemoteServiceServlet implements FoodTr
 	private static final PersistenceManagerFactory PMF = 
 			JDOHelper.getPersistenceManagerFactory("transactions-optional");
 	
+//    private String urlString = "http://m.uploadedit.com/ba3a/1426033445441.txt";
 	private List<FoodTruck> foodTrucks = new ArrayList<>();
-	private FoodTruckParser foodTruckParser = new FoodTruckParser();
+	private FoodTruckParser foodTruckParser; 
 	
 	@Override
-	public void parseFoodTruckData() {
+	public void parseFoodTruckData(String urlString) {
+		foodTruckParser = new FoodTruckParser(urlString);
 		foodTruckParser.parse();
 		foodTrucks = foodTruckParser.getFoodTruckList();
 	}
+
 	
 	@Override
 	public void persistFoodTruckData() {
