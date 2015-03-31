@@ -101,7 +101,7 @@ public class FoodMap {
 	    foodTruckPanel.add(lastUpdatedLabel)	;
 	    
 	    scrollPanel = new ScrollPanel(foodTruckFlexTable)	;
-	    scrollPanel.setSize("100%", "450px")				;
+	    scrollPanel.setSize("100%", "100%")				;
 	    RootPanel.get("mainContent").add(scrollPanel)		;
 	    searchedFoodTruck.setFocus(true)					;
 	}
@@ -275,6 +275,7 @@ public class FoodMap {
 		LatLng Vancouver = 		LatLng.newInstance(vanLat, vanLng)		;
 		map 			 = 		new MapWidget(Vancouver, 17)			;
 		map.setSize("100%", "100%")										;
+//		map.setSize("652px", "721px");
 		map.addControl(new LargeMapControl())							;
 		final DockLayoutPanel dock = new DockLayoutPanel(Unit.PX)		;
 		dock.addNorth(map, 500)											;				
