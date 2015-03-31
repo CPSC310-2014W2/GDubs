@@ -32,7 +32,7 @@ public class TestFoodParser {
 	}
 	
 	@Test
-	public void testFoodTruckSize()
+	public void testFoodTruckSize()      
 	{
 		parser.parse();
 		List<FoodTruck> list = parser.getFoodTruckList();

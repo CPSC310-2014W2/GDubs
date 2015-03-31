@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.cobogw.gwt.user.client.ui.Rating;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -11,6 +13,8 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.foodvendortracker.shared.FoodTruck;
 import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapWidget;
@@ -194,16 +198,27 @@ public class FoodMap {
 		displayFoodTrucks(showTruck);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void displayFoodTruck(FoodTruck foodTruck) 
 	{
 		int row = foodTruckFlexTable.getRowCount(); 
-			HTML images = new HTML("<img src ='/images/Good.png'></img> "
-					+ "<img src ='/images/Okay.png'></img>"
-					+ "<img src ='/images/Meh.png'></img>"
-					+ "<img src ='/images/FML.png'></img>", true);
+		Rating rating = new Rating(0, 5, 1, "/images/cbg-star.png", "/images/cbg-stardeselected.png", "/images/cbg-starhover.png", 16, 16);
+		final Label lbl1 = new Label();
+		final Label lbl2 = new Label("selected: " + rating.getValue());
+//			HTML images = new HTML("<img src ='/images/Good.png'></img> "
+//					+ "<img src ='/images/Okay.png'></img>"
+//					+ "<img src ='/images/Meh.png'></img>"
+//					+ "<img src ='/images/FML.png'></img>", true);
 			foodTruckFlexTable.setText(row, 0, foodTruck.getName());
 			foodTruckFlexTable.setText(row, 1, foodTruck.getDescription());	
-			foodTruckFlexTable.setWidget(row, 3, images);	
+			foodTruckFlexTable.setWidget(row, 3, rating);
+			foodTruckFlexTable.setWidget(row, 4, lbl2);
+			rating.addValueChangeHandler(new ValueChangeHandler() {
+				  public void onValueChange(ValueChangeEvent event) {
+				    lbl2.setText("you selected: " + event.getValue());
+				    lbl1.setText("");
+				  }
+				});
 	}
 	
 	private void displayFoodTrucks(List<FoodTruck> foodTruck) {
