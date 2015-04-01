@@ -58,13 +58,6 @@ img {
 	background-color: white; 
 	
 }
-.navLink:hover {
-	/*
-	background-color: #999999; 
-	text-decoration: none; 	
-	border-left: 10px solid black;
-	  */
-}
 
 .content {
 	position: fixed;
@@ -96,12 +89,6 @@ img {
 	width: 100%; 
 }
 
-#uploadButton {
-	background-color: red;
-	
-}
-
-
 #mapContainer {
 	float: right; 
 	height: 100%; 
@@ -116,6 +103,46 @@ img {
 	width: 100%;
 }
 
+input.searchBar {
+	width: 600px; 
+}
+
+button.searchButton {
+	width: 100px; 
+}
+
+button.uploadButton {
+	width: 50%;
+	margin-left: 25%; 
+	font-size: 2em;
+	text-align: center;	 
+}
+.gwt-Label.adminLabel {
+	width: 100%; 
+	font-size: 3em;
+  	font-weight: normal;
+  	color: #323132;
+  	text-align: center;
+  	font-family: calibri; 
+}
+
+.gwt-Label.displayLabel {
+	width: 100%; 
+	font-size: 1.5em;
+  	font-weight: normal;
+  	color: #323132;
+  	text-align: center;
+  	font-family: calibri; 
+}
+
+input.urlText {
+	width: 100%; 
+}
+
+.gwt-PopupPanelGlass {
+	background-color : red;
+	opacity: 0.3;  
+}
 
 /** Most GWT widgets already have a style name defined */
 .gwt-DialogBox {
@@ -132,8 +159,7 @@ img {
 
 .gwt-Button {
 	font-family: calibri;
-	background: transparent;
-	color: red;
+	color: black;
 	
 }
 

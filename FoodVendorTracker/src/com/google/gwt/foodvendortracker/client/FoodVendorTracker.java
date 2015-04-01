@@ -8,10 +8,12 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -29,6 +31,11 @@ public class FoodVendorTracker implements EntryPoint {
 
 	private VerticalPanel mainPanel = new VerticalPanel();  
 	private VerticalPanel sidebarPanel = new VerticalPanel();  
+	private VerticalPanel headerPanel = new VerticalPanel();
+	private VerticalPanel ratingPanel = new VerticalPanel();
+	private ScrollPanel scrollPanel = new ScrollPanel();
+    private VerticalPanel PopupPanelContent = new VerticalPanel(); 
+
 	
 	private LoginInfo loginInfo = null;
 	private VerticalPanel loginPanel = new VerticalPanel();
@@ -50,6 +57,10 @@ public class FoodVendorTracker implements EntryPoint {
 		
 	private final FoodTruckServiceAsync foodTruckService = GWT.create(FoodTruckService.class);
 	private final UserFavoriteServiceAsync userFavoriteService = GWT.create(UserFavoriteService.class);
+	
+	private FlexTable ratingFlexTable 			  		 = 		new FlexTable();							
+	private FlexTable ratingHeader	 			  		 = 		new FlexTable();
+	
 	// creating links on sidebar
 	final Anchor favLink = new Anchor("Favourite");
 	final Anchor ratingLink = new Anchor("Rating");
@@ -88,6 +99,10 @@ public class FoodVendorTracker implements EntryPoint {
 	      }
 	    });
 	}
+	
+	public void displayRating() {
+
+	}
 
 	public void loadLogin() {
 		// Assemble login panel.
@@ -105,30 +120,40 @@ public class FoodVendorTracker implements EntryPoint {
 	}
 		
 	public void loadAdmin() {	
-		
-		// loading url
-		RootPanel.get("textFieldContainer").add(urlText);
-		
 		// Set up sign out hyperlink.
 	    signOutLink.setHref(loginInfo.getLogoutUrl());
 	    
 		// We can add style names to widgets
 	    signOutLink.setStyleName("navLink");
 		uploadButton.addStyleName("uploadButton");
+		adminLabel.addStyleName("adminLabel");
+		urlText.addStyleName("urlText");
+		displayLabel.addStyleName("displayLabel");
 
 		// Use RootPanel.get() to get the entire body element
 		RootPanel.get("textFieldContainer").add(adminLabel);
-		RootPanel.get("textFieldContainer").add(displayLabel);
+		// loading url
+		RootPanel.get("textFieldContainer").add(urlText);
 		RootPanel.get("uploadButtonContainer").add(uploadButton);
+		RootPanel.get("uploadButtonContainer").add(displayLabel);
+
 		sidebarPanel.add(signOutLink);
 		
 		RootPanel.get("navigation").add(sidebarPanel);
+				
+		urlText.setText("Please insert the url you would like to upload.");
+		urlText.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				urlText.setText("");
+				urlText.setFocus(true); 
+			}
+		});
 	    
 	    // Listen for mouse events on the upload button.
 	    uploadButton.addClickHandler(new ClickHandler() {
 	      public void onClick(ClickEvent event) {
 	    	  String urlString = urlText.getText();
-	    	  foodTruckService.parseFoodTruckData(urlString, new AsyncCallback<Void>(){
+	    	  foodTruckService.parseFoodTruckData(urlString, new AsyncCallback<Void>() {
 	  			public void onFailure(Throwable error){
 	  				displayLabel.setText("Failure to add food truck: " + error.toString());
 	  			}
@@ -174,7 +199,7 @@ public class FoodVendorTracker implements EntryPoint {
 		
 		ratingLink.addClickHandler(new ClickHandler() {
 	        public void onClick(ClickEvent event) {
-	        	new ratingPopup().center(); 
+	        	new RatingPopup().center(); 
 	        }
 	    });
 	}
@@ -185,14 +210,5 @@ public class FoodVendorTracker implements EntryPoint {
 			setWidget(new HTML("Place Favourite Here" + "<br />" + "Favourites placeholder"));
 		}
 	}
-	
-	private static class ratingPopup extends PopupPanel {
-		public ratingPopup() {
-			super(true);
-			setWidget(new HTML("Place Rating Here" + "<br />" + "Ratings placeholder"));
-		}
-	}
-	
-	
-	
+		
 }

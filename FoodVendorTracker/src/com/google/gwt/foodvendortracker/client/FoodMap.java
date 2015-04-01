@@ -275,10 +275,9 @@ public class FoodMap {
 		LatLng Vancouver = 		LatLng.newInstance(vanLat, vanLng)		;
 		map 			 = 		new MapWidget(Vancouver, 17)			;
 		map.setSize("100%", "100%")										;
-//		map.setSize("652px", "721px");
 		map.addControl(new LargeMapControl())							;
 		final DockLayoutPanel dock = new DockLayoutPanel(Unit.PX)		;
-		dock.addNorth(map, 500)											;				
+		dock.addNorth(map, 600)											;				
 		RootPanel.get("mapContainer").add(dock)							;	 
 	}
 
