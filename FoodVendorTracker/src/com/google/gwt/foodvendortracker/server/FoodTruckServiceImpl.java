@@ -19,8 +19,10 @@ import com.google.gwt.foodvendortracker.client.RatingService;
 import com.google.gwt.foodvendortracker.client.UserFavoriteService;
 import com.google.gwt.foodvendortracker.shared.FoodTruck;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.google.gwt.foodvendortracker.shared.Favorite;
 
-public class FoodTruckServiceImpl extends RemoteServiceServlet implements FoodTruckService, UserFavoriteService, RatingService {
+
+public class FoodTruckServiceImpl extends RemoteServiceServlet implements FoodTruckService, UserFavoriteService {
 	private static final PersistenceManagerFactory PMF = 
 			JDOHelper.getPersistenceManagerFactory("transactions-optional");
 	
@@ -82,40 +84,56 @@ public class FoodTruckServiceImpl extends RemoteServiceServlet implements FoodTr
 		pm.deletePersistent(foodTrucks);
 	}
 	
-	public void addFavorite(FoodTruck foodtruck) throws NotLoggedInException
+	public String addFavorite(String foodtruckID) throws NotLoggedInException
 	{
+		String result = "false";
 		checkLoggedIn();
 		PersistenceManager pm = getPersistenceManager();
 		try
 		{
-			Favorite favorite = new Favorite();
-			favorite.setFoodTruck(foodtruck);
-			favorite.setUser(getUser());
-			pm.makePersistent(favorite);
-		}
-		finally
-		{
-			pm.close();
-		}
-	}
-	
-	public void removeFavorite(FoodTruck foodtruck) throws NotLoggedInException
-	{
-		checkLoggedIn();
-		PersistenceManager pm = getPersistenceManager();
-		try
-		{
-			long deleteCount = 0;
+			boolean exists = false;
 			Query q = pm.newQuery(Favorite.class, "user == u");
 			q.declareParameters("com.google.appengine.api.users.User u");
 			List<Favorite> favorites = (List<Favorite>) q.execute(getUser());
 			for(Favorite f : favorites)
 			{
-				if(f.getFoodTruck().getName().equals(foodtruck.getName()))
+				if(f.getFoodTruckID().equals(foodtruckID))
 				{
-					deleteCount ++;
-					pm.deletePersistent(f);
+					exists = true;
+					break;
 				}
+			}
+			if(exists == false)
+			{
+				Favorite favorite = new Favorite();
+				favorite.setFoodTruckID(foodtruckID);
+				favorite.setUser(getUser());
+				pm.makePersistent(favorite);
+				result = "added";
+			}
+		}
+		finally
+		{
+			pm.close();
+		}
+		return result;
+	}
+	
+	public void removeFavorite(String foodtruckID) throws NotLoggedInException
+	{
+		checkLoggedIn();
+		PersistenceManager pm = getPersistenceManager();
+		try
+		{
+			Query q = pm.newQuery(Favorite.class, "user == u");
+			q.declareParameters("com.google.appengine.api.users.User u");
+			List<Favorite> favorites = (List<Favorite>) q.execute(getUser());
+			for(Favorite f : favorites)
+			{
+				if(f.getFoodTruckID().equals(foodtruckID))
+				{
+					pm.deletePersistent(f);
+				}				
 			}
 		}
 		finally
@@ -130,14 +148,15 @@ public class FoodTruckServiceImpl extends RemoteServiceServlet implements FoodTr
 		PersistenceManager pm = getPersistenceManager();
 		ArrayList<FoodTruck> trucks = new ArrayList<FoodTruck>();
 		try
-		{
+		{			
 			Query q = pm.newQuery(Favorite.class, "user == u");
 			q.declareParameters("com.google.appengine.api.users.User u");
-			q.setOrdering("createDate");
-			List<Favorite> favorites = (List<Favorite>) q.execute(getUser());
-			for(Favorite f : favorites)
+			List<Favorite> ids = (List<Favorite>) q.execute(getUser());
+			FoodTruck foodtruck;
+			for(Favorite id : ids)
 			{
-				trucks.add(f.getFoodTruck());
+				foodtruck = getFoodTruckFromID(id.getFoodTruckID());
+				trucks.add(foodtruck);
 			}
 		}
 		finally
@@ -146,6 +165,7 @@ public class FoodTruckServiceImpl extends RemoteServiceServlet implements FoodTr
 		}
 		return trucks;
 	}
+
 	
 	public void addRating(String rating, FoodTruck foodTruck) throws NotLoggedInException
 	{
@@ -209,6 +229,13 @@ public class FoodTruckServiceImpl extends RemoteServiceServlet implements FoodTr
 			return ratedTrucks;
 		
 	  }
+	  
+      private FoodTruck getFoodTruckFromID(String id)
+	        {
+	                PersistenceManager pm = getPersistenceManager();
+	                FoodTruck result = pm.getObjectById(FoodTruck.class, id);
+	                return result;
+	        }
 	
 	private void checkLoggedIn() throws NotLoggedInException 
 	  {

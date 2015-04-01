@@ -1,0 +1,2 @@
+serviceClass: com.google.gwt.foodvendortracker.client.UserFavoriteService
+path: 338173D643D14B890376B25FADA08445.gwt.rpc

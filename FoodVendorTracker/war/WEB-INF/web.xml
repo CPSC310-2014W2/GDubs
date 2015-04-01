@@ -33,22 +33,22 @@
   </servlet-mapping>
   
    <servlet>
-    <servlet-name>UserFavoriteService</servlet-name>
+    <servlet-name>userFavoriteService</servlet-name>
     <servlet-class>com.google.gwt.foodvendortracker.server.FoodTruckServiceImpl</servlet-class>
   </servlet>
   
   <servlet-mapping>
-    <servlet-name>UserFavoriteService</servlet-name>
-    <url-pattern>/foodvendortracker/Favorite</url-pattern>
+    <servlet-name>userFavoriteService</servlet-name>
+    <url-pattern>/foodvendortracker/favorite</url-pattern>
   </servlet-mapping>
   
      <servlet>
-    <servlet-name>RatingService</servlet-name>
+    <servlet-name>ratingService</servlet-name>
     <servlet-class>com.google.gwt.foodvendortracker.server.FoodTruckServiceImpl</servlet-class>
   </servlet>
   
   <servlet-mapping>
-    <servlet-name>RatingService</servlet-name>
+    <servlet-name>ratingService</servlet-name>
     <url-pattern>/foodvendortracker/Rating</url-pattern>
   </servlet-mapping>
   
