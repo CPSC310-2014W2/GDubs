@@ -1,4 +1,4 @@
-package com.google.gwt.foodvendortracker.client;
+package com.google.gwt.foodvendortracker.server;
 
 import java.io.Serializable;
 
@@ -9,10 +9,9 @@ import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.users.User;
-import com.google.gwt.foodvendortracker.shared.FoodTruck;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
-public class Rating implements Serializable{
+public class UserRating implements Serializable{
 	
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
@@ -20,18 +19,18 @@ public class Rating implements Serializable{
 	@Persistent
 	private User user;
 	@Persistent
-	private FoodTruck foodTruck;
+	private String foodTruckName;
 	@Persistent
 	private int rating;
 	
-	public Rating(){
+	public UserRating(){
 		
 	}
 	
-	public Rating(FoodTruck foodTruck, int rating){
+	public UserRating(String foodTruckName, User user, int rating){
 		this();
-		//this.user = user;
-		this.foodTruck = foodTruck;
+		this.user = user;
+		this.foodTruckName = foodTruckName;
 	}
 
 	public Long getId() {
@@ -50,12 +49,12 @@ public class Rating implements Serializable{
 		this.user = user;
 	}
 
-	public FoodTruck getFoodTruck() {
-		return foodTruck;
+	public String getFoodTruckName() {
+		return foodTruckName;
 	}
 
-	public void setFoodTruck(FoodTruck foodTruck) {
-		this.foodTruck = foodTruck;
+	public void setFoodTruckName(String foodTruckName) {
+		this.foodTruckName = foodTruckName;
 	}
 
 	public int getRating() {

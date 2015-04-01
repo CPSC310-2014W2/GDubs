@@ -2,3 +2,5 @@
 # RPC service class, partial path of RPC policy file
 com.google.gwt.foodvendortracker.client.FoodTruckService, 02098E99654091ED8DBF8634F456B5F8.gwt.rpc
 com.google.gwt.foodvendortracker.client.LoginService, D20CB09E36166207E27C43F160497FF2.gwt.rpc
+com.google.gwt.foodvendortracker.client.RatingService, E34489E5A4585B1148DDBA52493B45EC.gwt.rpc
+com.google.gwt.foodvendortracker.client.UserFavoriteService, 07A5BBD4137CACBC7346973D152926C7.gwt.rpc

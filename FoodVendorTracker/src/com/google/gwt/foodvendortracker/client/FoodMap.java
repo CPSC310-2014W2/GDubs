@@ -203,6 +203,7 @@ public class FoodMap {
 	private void displayFoodTruck(FoodTruck foodTruck) 
 	{
 		int row = foodTruckFlexTable.getRowCount(); 
+		final String name = foodTruck.getName();
 		Rating rating = new Rating(0, 5, 1, "/images/cbg-star.png", "/images/cbg-stardeselected.png", "/images/cbg-starhover.png", 16, 16);
 		final Label lbl2 = new Label("selected: " + rating.getValue());
 			foodTruckFlexTable.setText(row, 0, foodTruck.getName());
@@ -211,17 +212,20 @@ public class FoodMap {
 			foodTruckFlexTable.setWidget(row, 4, lbl2);
 			rating.addValueChangeHandler(new ValueChangeHandler() {
 				  public void onValueChange(ValueChangeEvent event) {
-				    lbl2.setText("you selected: " + event.getValue());
-//				    ratingService.getAllRatings(new AsyncCallback<List<Rating>>(){
-//				    	@Override
-//				    	public void onFailure(Throwable caught){
-//				    		System.out.println(caught);
-//				    	}
-//				    	@Override
-//				    	public void onSuccess(List<Rating> ratings){
-//				    		System.out.println("successfully returned ratings");
-//				    	}
-//				    });
+					String tempString = (String) event.getValue().toString();
+					int ratingInt = Integer.parseInt(tempString);
+				    lbl2.setText("you selected: " + tempString);
+				    System.out.println(event.getValue());
+				    ratingService.addRating(name, ratingInt, new AsyncCallback<Void>(){
+				    	@Override
+				    	public void onFailure(Throwable caught){
+				    		System.out.println(caught);
+				    	}
+				    	@Override	
+				    	public void onSuccess(Void e){
+				    		System.out.println("successfully returned ratings");
+				    	}
+				    });
 				  }
 				});
 	}
