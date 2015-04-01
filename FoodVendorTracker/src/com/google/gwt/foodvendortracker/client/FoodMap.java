@@ -19,6 +19,8 @@ import com.google.gwt.maps.client.control.LargeMapControl;
 import com.google.gwt.maps.client.event.MapClickHandler;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.overlay.Marker;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
@@ -55,6 +57,10 @@ public class FoodMap {
 	private Image FML										 = 		new Image("/images/FML.png")				; 
 	private String searchText 								 =		""											;
 	private MapWidget map																						;
+	 private final UserFavoriteServiceAsync userFavoriteService    =         GWT.create(UserFavoriteService.class)       ;
+	 private static String errorResult                                =      "Error adding foodTruck to favorites"       ;
+	    private ArrayList<String> addedFavoriteNames     = new ArrayList<String>();
+	    private static String currentName = "";
 	
 	public void loadFoodTruck() 
 	{
@@ -211,7 +217,7 @@ public class FoodMap {
 		displayFoodTrucks(showTruck);
 	}
 	
-	private void displayFoodTruck(FoodTruck foodTruck) 
+	private void displayFoodTruck(final FoodTruck foodTruck) 
 	{
 		int row = foodTruckFlexTable.getRowCount(); 
 			HTML images = new HTML("<img src ='/images/Good.png'></img> "
@@ -224,7 +230,18 @@ public class FoodMap {
 			Meh.setStyleName("Meh");
 			FML.setStyleName("FML");
 			
-			HTML star = new HTML("<img src ='/images/star.jpg'>", true);
+			final HTML star = new HTML("<img src ='/images/star.jpg'>", true);
+			
+			star.addClickHandler(new ClickHandler() 
+            {
+                public void onClick(ClickEvent event) 
+                {
+                    currentName = foodTruck.getName();
+                    addFavorite(foodTruck.getId());
+                    star.setStyleName("navLink");
+                }
+            
+            });
 			
 			foodTruckFlexTable.setText(row, 0, foodTruck.getName());
 			foodTruckFlexTable.setText(row, 1, foodTruck.getDescription());	
@@ -267,6 +284,77 @@ public class FoodMap {
 		});
         return vendorOracle;
 	}
+	
+	public void addFavorite(final String foodtruckID)
+    {
+        
+        if(!addedFavoriteNames.contains(currentName))
+        {
+        userFavoriteService.addFavorite(foodtruckID, new AsyncCallback<String>()
+                {
+                    public void onFailure(Throwable error)
+                    {
+                        new errorpop().center();
+                        handleError(error);
+                    }
+                    public void onSuccess(String result)
+                    {
+                        if(result.equals("added"))
+                        {
+                            addedFavoriteNames.add(currentName);
+                            new pop().center();
+                        }
+                        else
+                        {                       
+                            removeFav(foodtruckID);
+                            new deletePop().center();
+                        }
+ 
+                    }
+                });
+        }
+        else
+        {
+            removeFav(foodtruckID);
+            new deletePop().center();
+        }
+    }
+    
+    public void removeFav(final String foodtruckID)
+    {
+        userFavoriteService.removeFavorite(foodtruckID, new AsyncCallback<Void>()
+                {
+                    public void onFailure(Throwable error) 
+                    {
+                        new errorpop().center();
+                        handleError(error);
+                        
+                    }
+ 
+                    public void onSuccess(Void result) {
+                        for(int i=0; i<addedFavoriteNames.size(); i++)
+                        {
+                            String cur = addedFavoriteNames.get(i);
+                            
+                            if(cur.equals(currentName))
+                            {
+                                addedFavoriteNames.remove(i);
+                            }
+                        }
+                    }
+            
+                });
+    }
+    
+    
+    private void handleError(Throwable error)
+    {
+        Window.alert(error.getMessage());
+        if(error instanceof NotLoggedInException)
+        {
+            Window.Location.replace("ERROR");
+        }
+    }
 
 	private void loadMap() 
 	{
@@ -358,4 +446,26 @@ public class FoodMap {
 			map.addOverlay(new Marker(cord))									;
 		}	
 	}
+
+
+private static class pop extends PopupPanel {
+    public pop() {
+        super(true);
+        setWidget(new HTML("Added " + currentName + " to your favorites!!"));
+    }
+}
+
+private static class errorpop extends PopupPanel {
+    public errorpop() {
+        super(true);
+        setWidget(new HTML(errorResult));
+    }
+}
+
+private static class deletePop extends PopupPanel {
+    public deletePop() {
+        super(true);
+        setWidget(new HTML(currentName + " has been deleted from your favorites"));
+    }
+}
 }

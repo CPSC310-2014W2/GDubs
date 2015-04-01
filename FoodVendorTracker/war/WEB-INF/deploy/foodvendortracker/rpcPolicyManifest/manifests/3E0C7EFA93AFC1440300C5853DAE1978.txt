@@ -1,0 +1,2 @@
+serviceClass: com.google.gwt.foodvendortracker.client.FoodTruckService
+path: 02098E99654091ED8DBF8634F456B5F8.gwt.rpc

@@ -1,5 +1,6 @@
 package com.google.gwt.foodvendortracker.client;
-
+import java.util.ArrayList; 
+import java.util.List; 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -14,6 +15,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.foodvendortracker.shared.FoodTruck; 
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -29,7 +31,7 @@ public class FoodVendorTracker implements EntryPoint {
 
 	private VerticalPanel mainPanel = new VerticalPanel();  
 	private VerticalPanel sidebarPanel = new VerticalPanel();  
-	
+	private static ArrayList<String> favoriteNames  = new ArrayList<String>();
 	private LoginInfo loginInfo = null;
 	private VerticalPanel loginPanel = new VerticalPanel();
 	private Label loginLabel = new Label("Please sign in to your Google Account.");
@@ -168,6 +170,7 @@ public class FoodVendorTracker implements EntryPoint {
 		
 		favLink.addClickHandler(new ClickHandler() {
 	        public void onClick(ClickEvent event) {
+	        	loadFavorites(); 
 	        	 new favPopup().center(); 
 	        }
 	    });
@@ -179,20 +182,58 @@ public class FoodVendorTracker implements EntryPoint {
 	    });
 	}
 	
-	private static class favPopup extends PopupPanel {
+	
+	private void loadFavorites()
+	{
+		userFavoriteService.getFavoriteFoodTrucks(new AsyncCallback<ArrayList<FoodTruck>>() {
+	        public void onFailure(Throwable error) 
+	        {
+	        	handleErrorFav(error);
+	        }
+
+			@Override
+			public void onSuccess(ArrayList<FoodTruck> result) 
+			{
+				for(FoodTruck t : result)
+				{
+					if(!favoriteNames.contains(t.getName()))
+					{
+						favoriteNames.add(t.getName());		
+					}
+				}
+				
+			}
+	      });
+	   }
+	
+	private void handleErrorFav(Throwable error)
+	{
+		Window.alert(error.getMessage());
+		if(error instanceof NotLoggedInException)
+		{
+			Window.Location.replace("ERROR");
+		}
+	}
+	
+	private static class favPopup extends PopupPanel
+	{
 		public favPopup() {
 			super(true);
-			setWidget(new HTML("Place Favourite Here" + "<br />" + "Favourites placeholder"));
+			String finalResult = "Favorited Food Trucks: <br>";
+			for(int i = 0; i < favoriteNames.size(); i++)
+			{
+				String name = favoriteNames.get(i);
+				finalResult = finalResult.concat(name + " <br>");
+			}
+			setWidget(new HTML(finalResult));
 		}
 	}
 	
 	private static class ratingPopup extends PopupPanel {
 		public ratingPopup() {
 			super(true);
-			setWidget(new HTML("Place Rating Here" + "<br />" + "Ratings placeholder"));
+			setWidget(new HTML("TODO"));
 		}
 	}
-	
-	
 	
 }

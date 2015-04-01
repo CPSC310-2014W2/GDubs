@@ -8,7 +8,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 @RemoteServiceRelativePath("favorite")
 public interface UserFavoriteService extends RemoteService{
-	public void addFavorite(FoodTruck foodtruck) throws NotLoggedInException		   ;
-	public void removeFavorite(FoodTruck foodtruck) throws NotLoggedInException		   ;
+	public String addFavorite(String foodTruckID) throws NotLoggedInException		   ;
+	public void removeFavorite(String foodTruckID) throws NotLoggedInException		   ;
 	public ArrayList<FoodTruck> getFavoriteFoodTrucks() throws NotLoggedInException	   ;
 }
