@@ -217,11 +217,10 @@ public class FoodMap {
 			Rating rating = new Rating(0, 5, 1, "/images/cbg-star.png", "/images/cbg-stardeselected.png", "/images/cbg-starhover.png", 16, 16);
 			final Label lbl2 = new Label("selected: " + rating.getValue());
 			final HTML clickedStar = new HTML("<img src ='/images/star-clicked.png'>", true);
-			final HTML unclickedStar = new HTML("<img src ='/images/star-notclicked.png'>", true);
 			final String name = foodTruck.getName();
 			
 					
-			unclickedStar.addClickHandler(new ClickHandler() 
+			clickedStar.addClickHandler(new ClickHandler() 
             {
                 public void onClick(ClickEvent event) 
                 {
@@ -236,7 +235,7 @@ public class FoodMap {
 
 			foodTruckFlexTable.setText(row, 0, foodTruck.getName());
 			foodTruckFlexTable.setText(row, 1, foodTruck.getDescription());	
-			foodTruckFlexTable.setWidget(row, 2, unclickedStar);	
+			foodTruckFlexTable.setWidget(row, 2, clickedStar);	
 			foodTruckFlexTable.setWidget(row, 3, rating);
 			foodTruckFlexTable.setWidget(row, 4, lbl2);
 			rating.addValueChangeHandler(new ValueChangeHandler() {
