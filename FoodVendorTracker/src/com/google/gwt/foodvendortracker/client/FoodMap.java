@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.List;
 
+import org.cobogw.gwt.user.client.ui.Rating;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -11,6 +13,8 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.foodvendortracker.shared.FoodTruck;
 import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapWidget;
@@ -39,6 +43,7 @@ public class FoodMap {
 
 	private static final String API_KEY                 	 = 		"AIzaSyBDGcnhtpy_BVkfa82aOb_mSPZezrQRiWs"	; 
 	private final FoodTruckServiceAsync foodTruckService	 = 		GWT.create(FoodTruckService.class)			;
+	private final UserRatingServiceAsync ratingService		 = 		GWT.create(UserRatingService.class)			;
 	private VerticalPanel foodTruckPanel 					 = 		new VerticalPanel()							;
 	private VerticalPanel headerPanel 						 = 		new VerticalPanel()							;
 	private FlexTable foodTruckFlexTable 			  		 = 		new FlexTable()								;
@@ -217,20 +222,23 @@ public class FoodMap {
 		displayFoodTrucks(showTruck);
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void displayFoodTruck(final FoodTruck foodTruck) 
 	{
 		int row = foodTruckFlexTable.getRowCount(); 
-			HTML images = new HTML("<img src ='/images/Good.png'></img> "
-					+ "<img src ='/images/Okay.png'></img>"
-					+ "<img src ='/images/Meh.png'></img>"
-					+ "<img src ='/images/FML.png'></img>", true);
-			
-			Good.setStyleName("Good");
-			Okay.setStyleName("Okay");
-			Meh.setStyleName("Meh");
-			FML.setStyleName("FML");
-			
+//			HTML images = new HTML("<img src ='/images/Good.png'></img> "
+//					+ "<img src ='/images/Okay.png'></img>"
+//					+ "<img src ='/images/Meh.png'></img>"
+//					+ "<img src ='/images/FML.png'></img>", true);
+//			
+//			Good.setStyleName("Good");
+//			Okay.setStyleName("Okay");
+//			Meh.setStyleName("Meh");
+//			FML.setStyleName("FML");
+			Rating rating = new Rating(0, 5, 1, "/images/cbg-star.png", "/images/cbg-stardeselected.png", "/images/cbg-starhover.png", 16, 16);
+			final Label lbl2 = new Label("selected: " + rating.getValue());
 			final HTML star = new HTML("<img src ='/images/star.jpg'>", true);
+			final String name = foodTruck.getName();
 			
 			star.addClickHandler(new ClickHandler() 
             {
@@ -246,7 +254,26 @@ public class FoodMap {
 			foodTruckFlexTable.setText(row, 0, foodTruck.getName());
 			foodTruckFlexTable.setText(row, 1, foodTruck.getDescription());	
 			foodTruckFlexTable.setWidget(row, 2, star);	
-			foodTruckFlexTable.setWidget(row, 3, images);	
+			foodTruckFlexTable.setWidget(row, 3, rating);
+			foodTruckFlexTable.setWidget(row, 4, lbl2);
+			rating.addValueChangeHandler(new ValueChangeHandler() {
+				  public void onValueChange(ValueChangeEvent event) {
+					String tempString = (String) event.getValue().toString();
+					int ratingInt = Integer.parseInt(tempString);
+				    lbl2.setText("you selected: " + tempString);
+				    System.out.println(event.getValue());
+				    ratingService.addRating(name, ratingInt, new AsyncCallback<Void>(){
+				    	@Override
+				    	public void onFailure(Throwable caught){
+				    		System.out.println(caught);
+				    	}
+				    	@Override	
+				    	public void onSuccess(Void e){
+				    		System.out.println("successfully returned ratings");
+				    	}
+				    });
+				  }
+				  });
 	}
 	
 	private void displayFoodTrucks(List<FoodTruck> foodTruck) 
