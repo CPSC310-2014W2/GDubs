@@ -9,5 +9,5 @@ public interface UserRatingServiceAsync {
 	public void addRating(String foodTruckName, int rating, AsyncCallback<Void> async);
 	public void removeRating(String foodTruckName, AsyncCallback<Void> async);
 	public void getCurrentUserRating(String foodTruckName, AsyncCallback<Integer> async);
-	public void getRatings(List<String> foodTruckName, AsyncCallback<List<ClientRating>> async);
+	public void getRatings(AsyncCallback<List<ClientRating>> async);
 }

@@ -44,12 +44,12 @@
   
      <servlet>
     <servlet-name>ratingService</servlet-name>
-    <servlet-class>com.google.gwt.foodvendortracker.server.FoodTruckServiceImpl</servlet-class>
+    <servlet-class>com.google.gwt.foodvendortracker.server.UserRatingServiceImpl</servlet-class>
   </servlet>
   
   <servlet-mapping>
     <servlet-name>ratingService</servlet-name>
-    <url-pattern>/foodvendortracker/Rating</url-pattern>
+    <url-pattern>/foodvendortracker/UserRating</url-pattern>
   </servlet-mapping>
   
   

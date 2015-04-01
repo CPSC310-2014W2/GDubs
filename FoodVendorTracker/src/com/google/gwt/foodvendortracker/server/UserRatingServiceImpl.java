@@ -102,7 +102,7 @@ public class UserRatingServiceImpl extends RemoteServiceServlet implements UserR
 		return returnRating;
 	}
 	
-	public List<ClientRating> getRatings(List<String> foodTruckName) throws NotLoggedInException {
+	public List<ClientRating> getRatings() throws NotLoggedInException {
 		checkLoggedIn();
 		PersistenceManager pm = getPersistenceManager();
 		List<ClientRating> clientRatings = new ArrayList<ClientRating>();
@@ -110,14 +110,10 @@ public class UserRatingServiceImpl extends RemoteServiceServlet implements UserR
 			Query q = pm.newQuery(UserRating.class, "rating > rating_threshold");
 			q.declareParameters("int rating_threshold");
 			List<UserRating> ratings = (List<UserRating>) q.execute(0);
-			for (String name : foodTruckName){
 				for (UserRating rating : ratings){
-					if (name.equals(rating.getFoodTruckName())){
-					ClientRating clientRating = new ClientRating(name, rating.getRating());
+					ClientRating clientRating = new ClientRating(rating.getFoodTruckName(), rating.getRating());
 					clientRatings.add(clientRating);
-					}
 				}
-			}
 		} finally {
 			pm.close();
 		}
