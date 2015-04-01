@@ -55,8 +55,8 @@ public class FoodVendorTracker implements EntryPoint {
 			.create(FoodTruckService.class);
 	private final UserFavoriteServiceAsync userFavoriteService = GWT
 			.create(UserFavoriteService.class);
-	private final RatingServiceAsync ratingService = GWT
-			.create(RatingService.class);
+	private final UserRatingServiceAsync ratingService = GWT
+			.create(UserRatingService.class);
 	// creating links on sidebar
 	private Anchor favLink = new Anchor("Favourite" + "\n\r" + "\u2665");// heart
 																			// icon
@@ -169,41 +169,41 @@ public class FoodVendorTracker implements EntryPoint {
 			}
 		});
 
-		ratingLink.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				final List<String> ratedFoodTrucks = new ArrayList<String>();
-				final List<Integer> foodTruckRatings = new ArrayList<Integer>();
-				ratingService
-						.getAllRatingNames(new AsyncCallback<List<String>>() {
-							@Override
-							public void onFailure(Throwable caught) {
-								System.out.println(caught);
-							}
-
-							@Override
-							public void onSuccess(final List<String> result) {
-								for (String s : result) {
-									ratedFoodTrucks.add(s);
-									ratingService.getRating(s,
-											new AsyncCallback<Integer>() {
-
-												@Override
-												public void onFailure(
-														Throwable caught) {
-													return;
-												}
-
-												@Override
-												public void onSuccess(
-														final Integer i) {
-													foodTruckRatings.add(i);
-												}
-											});
-								}
-							}
-						});
-			}
-		});
+//		ratingLink.addClickHandler(new ClickHandler() {
+//			public void onClick(ClickEvent event) {
+//				final List<String> ratedFoodTrucks = new ArrayList<String>();
+//				final List<Integer> foodTruckRatings = new ArrayList<Integer>();
+//				ratingService
+//						.getAllRatingNames(new AsyncCallback<List<String>>() {
+//							@Override
+//							public void onFailure(Throwable caught) {
+//								System.out.println(caught);
+//							}
+//
+//							@Override
+//							public void onSuccess(final List<String> result) {
+//								for (String s : result) {
+//									ratedFoodTrucks.add(s);
+//									ratingService.getRating(s,
+//											new AsyncCallback<Integer>() {
+//
+//												@Override
+//												public void onFailure(
+//														Throwable caught) {
+//													return;
+//												}
+//
+//												@Override
+//												public void onSuccess(
+//														final Integer i) {
+//													foodTruckRatings.add(i);
+//												}
+//											});
+//								}
+//							}
+//						});
+//			}
+//		});
 	}
 
 	public void loadNavigation() {

@@ -40,7 +40,7 @@ public class FoodMap {
 	private static final String API_KEY                 	 = 		"AIzaSyBDGcnhtpy_BVkfa82aOb_mSPZezrQRiWs"	; 
 	private ArrayList<LatLng> coordinates					 = 		new ArrayList<LatLng>()						;
 	private final FoodTruckServiceAsync foodTruckService	 = 		GWT.create(FoodTruckService.class)			;
-	private final RatingServiceAsync ratingService			 = 		GWT.create(RatingService.class)				;
+	private final UserRatingServiceAsync ratingService			 = 		GWT.create(UserRatingService.class)				;
 	private VerticalPanel foodTruckPanel 					 = 		new VerticalPanel()							;
 	private VerticalPanel headerPanel 						 = 		new VerticalPanel()							;
 	private FlexTable foodTruckFlexTable 			  		 = 		new FlexTable()								;
