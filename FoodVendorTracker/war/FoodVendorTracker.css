@@ -3,17 +3,15 @@ h1 {
   font-weight: normal;
   color: #323132;
   text-align: center;
-  text-decoration: overline;
   text-decoration: underline;
-  /* text-shadow: 3px 3px black; */ 
   text-transform: uppercase; 
   font-family: calibri; 
 }
 
 img {
 	float: left;
-	width:60px;
-	height:60px;  
+	width:50px;
+	height:50px;  
 }
 
 .top {
@@ -50,7 +48,6 @@ img {
 	text-transform: uppercase;
 	font-size: 1.8em; 
 	font-family: calibri; 
-	/*font-weight: bold;*/ 
 	text-align: left; 
 	display: block;
 	width: 100%; 
@@ -104,7 +101,7 @@ img {
 }
 
 input.searchBar {
-	width: 600px; 
+	width: 500px; 
 }
 
 button.searchButton {

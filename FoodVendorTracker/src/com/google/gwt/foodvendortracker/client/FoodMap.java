@@ -87,15 +87,18 @@ public class FoodMap {
 		headerFlexTable.setText(0, 2, "Favourite")								;
 		headerFlexTable.setText(0, 3, "Rating")									;
 		headerFlexTable.getRowFormatter().addStyleName(0, "tableHeader")		;
-		headerFlexTable.getColumnFormatter().setWidth(0, "100px")				;
+		headerFlexTable.getColumnFormatter().setWidth(0, "150px")				;
 		headerFlexTable.getColumnFormatter().setWidth(1, "200px")				;
 		headerFlexTable.getColumnFormatter().setWidth(2, "100px")				;	
-		headerFlexTable.getColumnFormatter().setWidth(3, "350px")				;
+		headerFlexTable.getColumnFormatter().setWidth(3, "150px")				;
+		headerFlexTable.getColumnFormatter().setWidth(4, "100px")				;
 
-		foodTruckFlexTable.getColumnFormatter().setWidth(0, "100px")			;
+		foodTruckFlexTable.getColumnFormatter().setWidth(0, "150px")			;
 		foodTruckFlexTable.getColumnFormatter().setWidth(1, "200px")			;
 		foodTruckFlexTable.getColumnFormatter().setWidth(2, "100px")			;
-		foodTruckFlexTable.getColumnFormatter().setWidth(3, "350px")			;
+		foodTruckFlexTable.getColumnFormatter().setWidth(3, "150px")			;
+		foodTruckFlexTable.getColumnFormatter().setWidth(4, "100px")			;
+
 		
 	    addPanel.add(searchedFoodTruck)							;
 	    addPanel.add(searchButton)								;
@@ -209,27 +212,31 @@ public class FoodMap {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void displayFoodTruck(final FoodTruck foodTruck) 
 	{
-		int row = foodTruckFlexTable.getRowCount(); 
+		final int row = foodTruckFlexTable.getRowCount(); 
 
 			Rating rating = new Rating(0, 5, 1, "/images/cbg-star.png", "/images/cbg-stardeselected.png", "/images/cbg-starhover.png", 16, 16);
 			final Label lbl2 = new Label("selected: " + rating.getValue());
-			final HTML star = new HTML("<img src ='/images/star.jpg'>", true);
+			final HTML clickedStar = new HTML("<img src ='/images/star-clicked.png'>", true);
+			final HTML unclickedStar = new HTML("<img src ='/images/star-notclicked.png'>", true);
 			final String name = foodTruck.getName();
 			
-			star.addClickHandler(new ClickHandler() 
+					
+			unclickedStar.addClickHandler(new ClickHandler() 
             {
                 public void onClick(ClickEvent event) 
                 {
+                	foodTruckFlexTable.setWidget(row, 2, clickedStar);
                     currentName = foodTruck.getName();
                     addFavorite(foodTruck.getId());
-                    star.setStyleName("navLink");
+                    clickedStar.setStyleName("navLink");
+                    
                 }
             
             });
-			
+
 			foodTruckFlexTable.setText(row, 0, foodTruck.getName());
 			foodTruckFlexTable.setText(row, 1, foodTruck.getDescription());	
-			foodTruckFlexTable.setWidget(row, 2, star);	
+			foodTruckFlexTable.setWidget(row, 2, unclickedStar);	
 			foodTruckFlexTable.setWidget(row, 3, rating);
 			foodTruckFlexTable.setWidget(row, 4, lbl2);
 			rating.addValueChangeHandler(new ValueChangeHandler() {
