@@ -139,11 +139,6 @@ input.urlText {
 	width: 100%; 
 }
 
-.gwt-PopupPanelGlass {
-	background-color : red;
-	opacity: 0.3;  
-}
-
 /** Most GWT widgets already have a style name defined */
 .gwt-DialogBox {
   width: 400px;

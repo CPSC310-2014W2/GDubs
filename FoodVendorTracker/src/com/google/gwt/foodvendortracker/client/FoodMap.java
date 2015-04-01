@@ -31,7 +31,6 @@ import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -55,11 +54,7 @@ public class FoodMap {
 	private ScrollPanel scrollPanel							 = 		new ScrollPanel()							;
 	private ArrayList<FoodTruck> allTruck 					 = 		new ArrayList<FoodTruck>()					;
 	private ArrayList<FoodTruck> filterTruck				 = 		new ArrayList<FoodTruck>()					;
-	private ArrayList<FoodTruck> showTruck 					 = 		new ArrayList<FoodTruck>()					;
-	private Image Good 										 = 		new Image("/images/Good.png")				; 
-	private Image Okay										 = 		new Image("/images/Okay.png")				;	 
-	private Image Meh 										 = 		new Image("/images/Meh.png")				; 
-	private Image FML										 = 		new Image("/images/FML.png")				; 
+	private ArrayList<FoodTruck> showTruck 					 = 		new ArrayList<FoodTruck>()					; 
 	private String searchText 								 =		""											;
 	private MapWidget map																						;
 	 private final UserFavoriteServiceAsync userFavoriteService    =         GWT.create(UserFavoriteService.class)       ;
@@ -123,7 +118,6 @@ public class FoodMap {
 		        	searchTruck();
 		        }
 		    });
-		 
 		 searchedFoodTruck.addKeyDownHandler(new KeyDownHandler() {
 		        public void onKeyDown(KeyDownEvent event) 
 		        {
@@ -133,19 +127,9 @@ public class FoodMap {
 		          }
 		       }
 		 });
-		 
-		 /* Enable this to force users to click Search Button instead of Enter
-		 searchedFoodTruck.addKeyPressHandler(new KeyPressHandler() {
-		        @Override
-		        public void onKeyPress(KeyPressEvent event) {
-		            int key = event.getNativeEvent().getKeyCode();
-		            if (key == KeyCodes.KEY_ENTER) {
-		                event.stopPropagation();
-		            }
-		        }
-		});
-		*/
+
 	}
+	
 	private void fetchTruck(List<FoodTruck> foodTruck) {
 		foodTruckService.getFoodTrucks(new AsyncCallback<List<FoodTruck>>(){
 				@Override
@@ -226,15 +210,7 @@ public class FoodMap {
 	private void displayFoodTruck(final FoodTruck foodTruck) 
 	{
 		int row = foodTruckFlexTable.getRowCount(); 
-//			HTML images = new HTML("<img src ='/images/Good.png'></img> "
-//					+ "<img src ='/images/Okay.png'></img>"
-//					+ "<img src ='/images/Meh.png'></img>"
-//					+ "<img src ='/images/FML.png'></img>", true);
-//			
-//			Good.setStyleName("Good");
-//			Okay.setStyleName("Okay");
-//			Meh.setStyleName("Meh");
-//			FML.setStyleName("FML");
+
 			Rating rating = new Rating(0, 5, 1, "/images/cbg-star.png", "/images/cbg-stardeselected.png", "/images/cbg-starhover.png", 16, 16);
 			final Label lbl2 = new Label("selected: " + rating.getValue());
 			final HTML star = new HTML("<img src ='/images/star.jpg'>", true);

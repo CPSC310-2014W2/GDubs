@@ -29,6 +29,8 @@ public class RatingPopup extends PopupPanel{
 		ratingHeader.getColumnFormatter().setWidth(1, "250px")				;
 		ratingHeader.getColumnFormatter().setWidth(2, "250px")				;
 		ratingHeader.getColumnFormatter().setWidth(3, "250px")				;
+		ratingHeader.getColumnFormatter().setWidth(3, "250px")				;
+
 		
 		ratingFlexTable.setText(0, 0, "test1")								;		
 		ratingFlexTable.setText(0, 1, "value1")								;

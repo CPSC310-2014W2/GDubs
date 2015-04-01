@@ -1,6 +1,5 @@
 package com.google.gwt.foodvendortracker.client;
 import java.util.ArrayList; 
-import java.util.List; 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -9,12 +8,10 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.foodvendortracker.shared.FoodTruck; 
@@ -33,10 +30,6 @@ public class FoodVendorTracker implements EntryPoint {
 
 	private VerticalPanel mainPanel = new VerticalPanel();  
 	private VerticalPanel sidebarPanel = new VerticalPanel();  
-	private VerticalPanel headerPanel = new VerticalPanel();
-	private VerticalPanel ratingPanel = new VerticalPanel();
-	private ScrollPanel scrollPanel = new ScrollPanel();
-    private VerticalPanel PopupPanelContent = new VerticalPanel(); 
 
 	private static ArrayList<String> favoriteNames  = new ArrayList<String>();
 	private LoginInfo loginInfo = null;
@@ -49,7 +42,6 @@ public class FoodVendorTracker implements EntryPoint {
 	private Button uploadButton = new Button("Upload");
 	
 	private Label adminLabel = new Label("This is the admin page");
-	private Label userLabel = new Label("This is the non-admin page");
 
 	private TextBox urlText = new TextBox();
 
@@ -59,9 +51,6 @@ public class FoodVendorTracker implements EntryPoint {
 		
 	private final FoodTruckServiceAsync foodTruckService = GWT.create(FoodTruckService.class);
 	private final UserFavoriteServiceAsync userFavoriteService = GWT.create(UserFavoriteService.class);
-	
-	private FlexTable ratingFlexTable 			  		 = 		new FlexTable();							
-	private FlexTable ratingHeader	 			  		 = 		new FlexTable();
 	
 	// creating links on sidebar
 	final Anchor favLink = new Anchor("Favourite");
@@ -115,7 +104,6 @@ public class FoodVendorTracker implements EntryPoint {
 	}
 
 	public void loadMain() {
-		RootPanel.get("searchFieldContainer").add(userLabel);
 		loadNavigation(); 
 		popUpNavigation(); 
         foodMap.loadFoodTruck(); 
@@ -143,13 +131,12 @@ public class FoodVendorTracker implements EntryPoint {
 		
 		RootPanel.get("navigation").add(sidebarPanel);
 				
-		urlText.setText("Please insert the url you would like to upload.");
+		urlText.setText("http://m.uploadedit.com/ba3a/1426033445441.txt");
 		urlText.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				urlText.setText("");
-				urlText.setFocus(true); 
-			}
-		});
+	        public void onClick(ClickEvent event) {
+	        	urlText.selectAll();
+	        }
+	    });
 	    
 	    // Listen for mouse events on the upload button.
 	    uploadButton.addClickHandler(new ClickHandler() {
@@ -162,10 +149,10 @@ public class FoodVendorTracker implements EntryPoint {
 	  			public void onSuccess(Void ignore){
 	  	    	  foodTruckService.persistFoodTruckData(new AsyncCallback<Void>(){
 		    		  public void onFailure(Throwable error){
-		    			  displayLabel.setText("Fail");
+		    			  displayLabel.setText("Fail.");
 		    		  }
 		    		  public void onSuccess(Void ignore){
-		    			  displayLabel.setText("SUCCESS!");
+		    			  displayLabel.setText("Success! Data has been implemented.");
 		    		  }
 		    	  });
 	  			}
