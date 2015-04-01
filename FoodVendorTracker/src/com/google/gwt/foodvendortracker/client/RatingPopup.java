@@ -1,5 +1,9 @@
 package com.google.gwt.foodvendortracker.client;
 
+import java.util.List;
+
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -12,6 +16,7 @@ public class RatingPopup extends PopupPanel{
 	private ScrollPanel scrollPanel = new ScrollPanel();
     private VerticalPanel PopupPanelContent = new VerticalPanel(); 
     
+    private final UserRatingServiceAsync ratingService = GWT.create(UserRatingService.class);
     private FlexTable ratingFlexTable 			  		 = 		new FlexTable();							
 	private FlexTable ratingHeader	 			  		 = 		new FlexTable();
 		
@@ -31,6 +36,8 @@ public class RatingPopup extends PopupPanel{
 		ratingHeader.getColumnFormatter().setWidth(3, "250px")				;
 		ratingHeader.getColumnFormatter().setWidth(3, "250px")				;
 
+		
+		BindTable();
 		
 		ratingFlexTable.setText(0, 0, "test1")								;		
 		ratingFlexTable.setText(0, 1, "value1")								;
@@ -55,6 +62,21 @@ public class RatingPopup extends PopupPanel{
 	    RootPanel.get().add(PopupPanelContent);
 		setGlassEnabled(true); 
 		setWidget(PopupPanelContent);
+	}
+		
+	private void BindTable(){
+		ratingService.getRatings(new AsyncCallback<List<ClientRating>>(){
+			@Override
+			public void onFailure(Throwable error){
+				System.out.println(error);
+			}
+			@Override
+			public void onSuccess(List<ClientRating> ratings){
+				for(int i=0; i < ratings.size(); i++){
+					ratingFlexTable.setText(i, i+1, ratings.get(i).getFoodTruckName());
+				}
+			}
+		});
 	}
 
 }
