@@ -31,7 +31,7 @@ public class FoodVendorTracker implements EntryPoint {
 	private VerticalPanel mainPanel = new VerticalPanel();  
 	private VerticalPanel sidebarPanel = new VerticalPanel();  
 
-	private static ArrayList<String> favoriteNames  = new ArrayList<String>();
+	private static ArrayList<FoodTruck> favoriteNames  = new ArrayList<FoodTruck>();
 	private LoginInfo loginInfo = null;
 	private VerticalPanel loginPanel = new VerticalPanel();
 	private Label loginLabel = new Label("Please sign in to your Google Account.");
@@ -183,7 +183,7 @@ public class FoodVendorTracker implements EntryPoint {
 		favLink.addClickHandler(new ClickHandler() {
 	        public void onClick(ClickEvent event) {
 	        	loadFavorites(); 
-	        	 new favPopup().center(); 
+	        	new FavoritePopup(favoriteNames).center();   
 	        }
 	    });
 		
@@ -206,11 +206,12 @@ public class FoodVendorTracker implements EntryPoint {
 			@Override
 			public void onSuccess(ArrayList<FoodTruck> result) 
 			{
+				favoriteNames.clear();
 				for(FoodTruck t : result)
 				{
-					if(!favoriteNames.contains(t.getName()))
+					if(!favoriteNames.contains(t))
 					{
-						favoriteNames.add(t.getName());		
+						favoriteNames.add(t);		
 					}
 				}
 				
@@ -224,20 +225,6 @@ public class FoodVendorTracker implements EntryPoint {
 		if(error instanceof NotLoggedInException)
 		{
 			Window.Location.replace("ERROR");
-		}
-	}
-	
-	private static class favPopup extends PopupPanel
-	{
-		public favPopup() {
-			super(true);
-			String finalResult = "Favorited Food Trucks: <br>";
-			for(int i = 0; i < favoriteNames.size(); i++)
-			{
-				String name = favoriteNames.get(i);
-				finalResult = finalResult.concat(name + " <br>");
-			}
-			setWidget(new HTML(finalResult));
 		}
 	}
 
