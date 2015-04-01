@@ -315,8 +315,6 @@ public class FoodMap {
 	public void addFavorite(final String foodtruckID)
     {
         
-        if(!addedFavoriteNames.contains(currentName))
-        {
         userFavoriteService.addFavorite(foodtruckID, new AsyncCallback<String>()
                 {
                     public void onFailure(Throwable error)
@@ -333,18 +331,11 @@ public class FoodMap {
                         }
                         else
                         {                       
-                            removeFav(foodtruckID);
-                            new deletePop().center();
+                            new existspop().center();
                         }
  
                     }
                 });
-        }
-        else
-        {
-            removeFav(foodtruckID);
-            new deletePop().center();
-        }
     }
     
     public void removeFav(final String foodtruckID)
@@ -488,10 +479,10 @@ private static class errorpop extends PopupPanel {
     }
 }
 
-private static class deletePop extends PopupPanel {
-    public deletePop() {
+private static class existspop extends PopupPanel {
+    public existspop() {
         super(true);
-        setWidget(new HTML(currentName + " has been deleted from your favorites"));
+        setWidget(new HTML(currentName + " already exists as a favorite!"));
     }
 }
 }
